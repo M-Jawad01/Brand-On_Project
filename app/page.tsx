@@ -1,10 +1,21 @@
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Welcome to BRAND ON
+    <main className="flex min-h-screen flex-col items-center justify-center p-24">
+      <div className="z-10 max-w-5xl w-full items-center justify-center text-center">
+        <h1 className="text-5xl font-bold mb-4 text-brand-primary">
+          Welcome to BrandON
+        </h1>
+        <p className="text-xl text-gray-300 mb-8">
+          Your Premier Digital Advertising Partner
         </p>
+        <div className="flex gap-4 justify-center">
+          <button className="bg-brand-primary hover:bg-green-700 text-white font-bold py-3 px-6 rounded-lg transition">
+            View Services
+          </button>
+          <button className="bg-brand-secondary hover:bg-brand-accent text-white font-bold py-3 px-6 rounded-lg transition">
+            Our Portfolio
+          </button>
+        </div>
       </div>
     </main>
   )

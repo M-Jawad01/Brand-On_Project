@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// BrandON - Digital Advertising Agency Database Schema
+// This schema represents a custom service ordering platform for advertising services
 
 generator client {
   provider = "prisma-client-js"
@@ -9,52 +9,138 @@ datasource db {
   provider = "postgresql"
 }
 
+// User Role Enumeration
 enum Role {
-  ADMIN
-  AGENT
-  CUSTOMER
+  ADMIN      // System administrator with full access
+  AGENT      // Owner/Manager who can manage services and orders
+  CUSTOMER   // Buyers who can place orders and view services
 }
 
+// Order Status Enumeration
+enum OrderStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+// User Model - Authentication and Profile
 model User {
   id        String   @id @default(cuid())
   email     String   @unique
   name      String?
+  phone     String?
   role      Role     @default(CUSTOMER)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Add relations as needed, e.g., listings, gallery items
-  listings   Listing[]
-  galleryItems GalleryItem[]
+  // Relations
+  orders        Order[]
+  serviceProducts ServiceProduct[] // For AGENT/ADMIN who create services
 
   @@map("users")
 }
 
-model Listing {
+// ServiceProduct Model - Represents advertising services offered
+// Examples: LED Signboards, Birthday Banners, Showroom Branding, etc.
+model ServiceProduct {
   id          String   @id @default(cuid())
-  title       String
-  description String?
-  price       Float?   // Base price, price per sq ft logic to be handled in app logic
-  areaSqFt    Float?
-  location    String?
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String   // e.g., "LED Signboard", "Birthday Banner"
+  description String?  @db.Text
+  baseRate    Float    // Base price for the service
+  category    String?  // e.g., "Signage", "Banners", "Branding"
+  imageUrl    String?  // Product showcase image
+  
+  // Custom sizing support
+  allowCustomSize Boolean @default(true)
+  standardSizes   String? // JSON array of standard sizes, e.g., ["2x3 ft", "4x6 ft"]
+  
+  isActive    Boolean  @default(true)
+  createdById String
+  createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  @@map("listings")
+  // Relations
+  orders Order[]
+
+  @@map("service_products")
 }
 
+// Order Model - Customer orders for services
+model Order {
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique @default(cuid())
+  
+  // Customer and Service
+  customerId      String
+  customer        User        @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  serviceId       String
+  service         ServiceProduct @relation(fields: [serviceId], references: [id], onDelete: Restrict)
+  
+  // Order Details
+  quantity        Int         @default(1)
+  customSize      String?     // e.g., "3x5 feet", "120x80 cm"
+  totalPrice      Float
+  
+  // Custom Design Requirements (Client uploads or provides specifications)
+  designRequirements String?  @db.Text // Text description of design needs
+  designFilesJson    String?  @db.Text // JSON array of file URLs/paths
+  specialInstructions String? @db.Text
+  
+  // Status and Dates
+  status          OrderStatus @default(PENDING)
+  deliveryDate    DateTime?
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  @@map("orders")
+}
+
+// GalleryItem Model - Portfolio showcase (Grid View)
 model GalleryItem {
   id          String   @id @default(cuid())
   title       String
-  description String?
-  location    String?
-  imageUrl    String?
-  userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  description String?  @db.Text
+  imageUrl    String   // Main portfolio image
+  projectDate DateTime? // When the project was completed
+  category    String?  // e.g., "Signage", "Event Branding", "Corporate"
+  clientName  String?  // Optional client attribution
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@map("gallery_items")
+}
+
+// CompanyProfile Model - About/Contact Information
+// Single record storing company information
+model CompanyProfile {
+  id        String   @id @default(cuid())
+  
+  // Company Information
+  companyName String  @default("BrandON")
+  tagline     String?
+  about       String? @db.Text
+  
+  // Location and Contact
+  location         String? // Physical address for map integration
+  mapEmbedUrl      String? // Google Maps embed URL
+  phone            String?
+  email            String?
+  whatsappNumber   String?
+  
+  // Links
+  officialPageLink String? // Website or main landing page
+  facebookUrl      String?
+  instagramUrl     String?
+  twitterUrl       String?
+  linkedinUrl      String?
+  
+  // Business Hours
+  businessHours String? // e.g., "Mon-Sat: 9AM-6PM"
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("company_profile")
 }

@@ -9,11 +9,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Placeholder brand colors - to be customized
-        'brand-primary': '#3B82F6', // Blue-500
-        'brand-secondary': '#10B981', // Emerald-500
-        'brand-accent': '#F59E0B', // Amber-500
-        // Add more as needed
+        // BrandON Official Color Palette
+        'brand-primary': '#1E6E27', // Primary Green
+        'brand-secondary': '#283548', // Secondary Blue-Grey
+        'brand-accent': '#2C3C53', // Accent
+        'brand-base': '#1C293C', // Dark Blue/Charcoal Base
       },
     },
   },

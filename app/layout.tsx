@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'BRAND ON - Online Ordering & Property Listing',
-  description: 'A comprehensive online ordering and property listing system',
+  title: 'BrandON - Digital Advertising & Custom Design Services',
+  description: 'Professional digital advertising agency offering custom banners, LED signboards, showroom branding, and more',
 }
 
 export default function RootLayout({
@@ -16,7 +16,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-brand-base text-white`}>
         {children}
       </body>
     </html>
