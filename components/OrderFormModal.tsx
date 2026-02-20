@@ -42,10 +42,10 @@ export default function OrderFormModal({ isOpen, onClose, service, selectedSize 
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 overflow-y-auto">
-      <div className="bg-brand-secondary rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4 overflow-y-auto backdrop-blur-sm">
+      <div className="bg-brand-secondary-light rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-brand-accent-dark/50 shadow-2xl">
         {/* Modal Header */}
-        <div className="sticky top-0 bg-brand-secondary border-b border-brand-accent p-6 flex items-center justify-between">
+        <div className="sticky top-0 bg-brand-secondary-light border-b border-brand-accent-dark p-6 flex items-center justify-between">
           <div>
             <h2 className="text-2xl font-bold text-white">Order Custom Design</h2>
             <p className="text-gray-400 text-sm mt-1">{service.name}</p>

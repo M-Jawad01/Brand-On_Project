@@ -7,6 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 // User Role Enumeration
@@ -26,19 +27,93 @@ enum OrderStatus {
 
 // User Model - Authentication and Profile
 model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  passwordHash String    // Hashed password for authentication
+  name         String?
+  phone        String?
+  role         Role      @default(CUSTOMER)
+  emailVerified DateTime? // For email verification
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  // Relations
+  profile         Profile?
+  orders          Order[]
+  serviceProducts ServiceProduct[] // For AGENT/ADMIN who create services
+  sessions        Session[]        // For session management
+  accounts        Account[]        // For OAuth providers
+
+  @@map("users")
+}
+
+// Profile Model - Extended user information
+model Profile {
   id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  phone     String?
-  role      Role     @default(CUSTOMER)
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Contact Information
+  address   String?
+  city      String?
+  state     String?
+  zipCode   String?
+  country   String?
+  
+  // Business/Additional Info (for AGENT role)
+  companyName String?
+  website     String?
+  
+  // Preferences
+  avatar      String?
+  bio         String?  @db.Text
+  
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  // Relations
-  orders        Order[]
-  serviceProducts ServiceProduct[] // For AGENT/ADMIN who create services
+  @@map("profiles")
+}
 
-  @@map("users")
+// Account Model - For OAuth providers (NextAuth)
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+// Session Model - For session management (NextAuth)
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+// VerificationToken Model - For email verification (NextAuth)
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
 }
 
 // ServiceProduct Model - Represents advertising services offered

@@ -29,7 +29,7 @@ export default function Home() {
               </Link>
               <Link
                 href="/gallery"
-                className="bg-brand-secondary hover:bg-brand-accent text-white font-bold py-4 px-8 rounded-lg transition text-lg border-2 border-brand-accent"
+                className="bg-brand-secondary-light hover:bg-brand-accent text-white font-bold py-4 px-8 rounded-lg transition text-lg border-2 border-brand-primary"
               >
                 Our Portfolio
               </Link>
@@ -71,7 +71,7 @@ export default function Home() {
       </section>
 
       {/* Why Choose Us */}
-      <section className="py-16 bg-brand-secondary">
+      <section className="py-16 bg-brand-secondary-light">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">

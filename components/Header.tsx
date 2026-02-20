@@ -7,7 +7,7 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="bg-brand-base border-b border-brand-secondary sticky top-0 z-50">
+    <header className="bg-brand-base border-b border-brand-accent-dark sticky top-0 z-50 backdrop-blur-sm bg-opacity-95">
       <nav className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           {/* Logo - Top Left */}

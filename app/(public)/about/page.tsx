@@ -4,7 +4,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-gradient-to-b from-brand-secondary to-brand-base py-16">
+      <section className="bg-gradient-to-b from-brand-secondary-light to-brand-base py-16">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto">
             <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
@@ -21,7 +21,7 @@ export default function AboutPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-brand-secondary p-8 md:p-12 rounded-lg">
+            <div className="bg-brand-secondary-light p-8 md:p-12 rounded-lg border border-brand-accent-dark/30">
               <h2 className="text-3xl font-bold text-white mb-6">Our Story</h2>
               <div className="space-y-4 text-gray-300 leading-relaxed">
                 <p>{companyInfo.about}</p>
@@ -41,7 +41,7 @@ export default function AboutPage() {
       </section>
 
       {/* Contact Information */}
-      <section className="py-16 bg-brand-secondary">
+      <section className="py-16 bg-brand-secondary-light">
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold text-white mb-12 text-center">Get in Touch</h2>
           

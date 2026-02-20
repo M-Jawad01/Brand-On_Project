@@ -56,7 +56,7 @@ const categories = ['All', ...Array.from(new Set(mockGalleryItems.map((item) => 
             {filteredItems.map((item) => (
               <div
                 key={item.id}
-                className="group relative bg-brand-secondary rounded-lg overflow-hidden hover:shadow-xl hover:shadow-brand-primary/20 transition-all duration-300"
+                className="group relative bg-brand-secondary-light rounded-lg overflow-hidden hover:shadow-xl hover:shadow-brand-primary/30 transition-all duration-300 border border-brand-accent-dark/30"
               >
                 {/* image container */}
                 <div className="relative aspect-square overflow-hidden bg-brand-accent">
