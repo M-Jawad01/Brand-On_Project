@@ -23,7 +23,7 @@ export default function OrderFormModal({ isOpen, onClose, service, selectedSize 
 
   if (!isOpen) return null;
 
-  // --- AUTO-CALCULATION LOGIC ---
+  // AUTO-CALCULATION LOGIC 
   const calculatePricing = () => {
     let sqFt = 0;
     let finalPrice = service.baseRate; // Default to base rate value
