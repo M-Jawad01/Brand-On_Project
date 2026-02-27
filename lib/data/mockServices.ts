@@ -14,7 +14,7 @@ export interface Service {
 
 export const mockServices: Service[] = [
   {
-    id: '1',
+    id: "cmm4zzqdq000213k91c620dpy",
     name: 'LED Letter Signboard',
     description: 'Premium quality LED letter signboards perfect for storefronts, offices, and commercial spaces. Energy-efficient with long-lasting illumination.',
     category: 'Signage',
