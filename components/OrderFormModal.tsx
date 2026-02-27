@@ -26,7 +26,7 @@ export default function OrderFormModal({ isOpen, onClose, service, selectedSize 
   // --- AUTO-CALCULATION LOGIC ---
   const calculatePricing = () => {
     let sqFt = 0;
-    let finalPrice = service.baseRate; // Default to base rate
+    let finalPrice = service.baseRate; // Default to base rate value
 
     if (selectedSize) {
       // Regex to find two numbers separated by 'x', 'X', '×', or '*' (e.g., "4x8 ft" or "4 * 8")
