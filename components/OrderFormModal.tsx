@@ -44,7 +44,7 @@ export default function OrderFormModal({ isOpen, onClose, service, selectedSize 
   };
 
   const { sqFt, finalPrice } = calculatePricing();
-  // ------------------------------
+  // 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
