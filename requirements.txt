@@ -1,0 +1,61 @@
+Project Scope & Requirements
+Project Name: Print on Demand System
+Objective: To build a web-based platform allowing customers to order custom-sized printed materials (banners, stickers, etc.) with dynamic pricing, and an admin panel for order and service management.
+Target Output: Minimal MVP website (Client Budget: 2k - 3k).
+1. Core Features & Customer Experience
+• Service & Client Gallery: The website will feature a gallery showcasing available services and a list of current/running clients.
+• Available Services: Banner printing, LED lighting, and Sticker printing.
+• Size Selection: Customers can choose from fixed PVC banner sizes (4 feet, 8 feet, 10 feet) or input custom sizes.
+• Design Upload: Customers will upload their designs strictly in JPG format.
+• Order Notifications: Customers expect an automated notification once an order is successfully placed.
+2. Dynamic Pricing & Calculation
+• Auto-Calculation: Prices will be automatically generated based on the size input (Square Feet).
+• Variable Pricing: The base price varies depending on the overall size.
+• Finishing Charges: Clients are willing to pay extra for finishing options (these will be added to the final auto-generated price).
+• Finishing Charges: Extra charges will apply for finishing options (e.g., Eyelets, Pole Pockets, Gumming). When a customer selects these options, the additional costs will be automatically added to the final auto-generated price.
+3. Admin Panel Workflow
+• Dynamic Service Selection: A dedicated feature where admins can dynamically select and update which products or services are currently available on the website.
+• Order Processing: Admins will update order statuses through a specific pipeline (e.g., Order Received -> Printing -> Ready for Delivery).
+4. Delivery & Logistics
+• Delivery Partners: Options will include RedX, Pathao, or the client''s own delivery personnel.
+• Service Area: District-wise delivery must be supported.
+• Emergency Options: The system needs to accommodate emergency/fast delivery requests.
+Pending Questions for the Client
+Pricing & Logic
+• Pricing Variations: Will the pricing vary strictly based on the material, or will specific designs also affect the cost?
+• Aspect Ratio Conflicts: If a customer inputs a custom size (e.g., 5x5 Square) but uploads a rectangular JPG, how should the system handle it? Should it crop the image automatically, or show a warning to the user?
+Materials & Finishing Details
+• Material Catalog: What specific materials are offered for the banners (e.g., Normal Banner, Star Flex, Vinyl, Cloth)?
+Maintenance & Hosting
+• Post-Live Plan: What is the specific plan for hosting (e.g., AWS S3 for storing uploaded high-res JPGs, Database) and ongoing maintenance?
+• Operational Budget: Aside from the initial 2-3k development budget, is there a planned monthly/yearly budget for keeping the server running?
+
+
+Project BrandON: Requirement Specification & Brand Guidelines
+1. Introduction & Project Overview
+(please provide a brief overview of the project and what you aim to achieve with this project.)
+
+2. User Roles & Authentication
+We have outlined the user roles below, would you like to add any further roles or permissions?
+● Admin: Full system control.
+● Agent/Owner: Property listing and management.
+● Customer/Buyer: Browsing and purchasing.
+
+3. Digital Handbook (The Branding Guide)
+The entire frontend architecture will be strictly based on your brand identity and the guidelines provided in the Digital Handbook.
+● Color Palette Name: [Please provide the specific color codes/names here]
+● Logo Placement: [Mention if you have any specific preference for logo positioning]
+● Visual Rules: [How should the colors be applied to buttons, headers, and backgrounds?]
+
+4. Property Listing Details
+The following specifications will be featured in every property post:
+● Specific Poster: [Client, please describe how the poster layout should look]
+● Pricing Model: Listed as Price per Square Foot.
+● Description & Size: Detailed text and sq. ft. measurements.
+● Gallery: Photos of the specific project/property.
+
+5. "About" Section & Official Information
+Every listing or profile will have an "About" section. Please confirm if these fields are enough:
+● Location (Map integration)
+● Official Page Link
+● Contact/Official Corporate Info

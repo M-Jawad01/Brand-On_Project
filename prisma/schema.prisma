@@ -1,5 +1,4 @@
-// BrandON - Digital Advertising Agency Database Schema
-// This schema represents a custom service ordering platform for advertising services
+// BrandON - Custom Banner Printing Platform
 
 generator client {
   provider = "prisma-client-js"
@@ -10,212 +9,89 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// User Role Enumeration
-enum Role {
-  ADMIN      // System administrator with full access
-  AGENT      // Owner/Manager who can manage services and orders
-  CUSTOMER   // Buyers who can place orders and view services
-}
-
-// Order Status Enumeration
 enum OrderStatus {
   PENDING
+  CONFIRMED
   IN_PROGRESS
   COMPLETED
   CANCELLED
 }
 
-// User Model - Authentication and Profile
-model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  passwordHash String    // Hashed password for authentication
-  name         String?
-  phone        String?
-  role         Role      @default(CUSTOMER)
-  emailVerified DateTime? // For email verification
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-
-  // Relations
-  profile         Profile?
-  orders          Order[]
-  serviceProducts ServiceProduct[] // For AGENT/ADMIN who create services
-  sessions        Session[]        // For session management
-  accounts        Account[]        // For OAuth providers
-
-  @@map("users")
-}
-
-// Profile Model - Extended user information
-model Profile {
-  id        String   @id @default(cuid())
-  userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  // Contact Information
-  address   String?
-  city      String?
-  state     String?
-  zipCode   String?
-  country   String?
-  
-  // Business/Additional Info (for AGENT role)
-  companyName String?
-  website     String?
-  
-  // Preferences
-  avatar      String?
-  bio         String?  @db.Text
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("profiles")
-}
-
-// Account Model - For OAuth providers (NextAuth)
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([provider, providerAccountId])
-  @@map("accounts")
-}
-
-// Session Model - For session management (NextAuth)
-model Session {
+// Banner material (e.g. Star Flex, Vinyl, PVC, Backlit)
+model Material {
   id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String   @unique
+  description  String?  @db.Text
+  pricePerSqFt Float
+  imageUrl     String?
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
-  @@map("sessions")
-}
-
-// VerificationToken Model - For email verification (NextAuth)
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_tokens")
-}
-
-// ServiceProduct Model - Represents advertising services offered
-// Examples: LED Signboards, Birthday Banners, Showroom Branding, etc.
-model ServiceProduct {
-  id          String   @id @default(cuid())
-  name        String   // e.g., "LED Signboard", "Birthday Banner"
-  description String?  @db.Text
-  baseRate    Float    // Base price for the service
-  category    String?  // e.g., "Signage", "Banners", "Branding"
-  imageUrl    String?  // Product showcase image
-  
-  // Custom sizing support
-  allowCustomSize Boolean @default(true)
-  standardSizes   String? // JSON array of standard sizes, e.g., ["2x3 ft", "4x6 ft"]
-  
-  isActive    Boolean  @default(true)
-  createdById String
-  createdBy   User     @relation(fields: [createdById], references: [id], onDelete: Cascade)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  // Relations
   orders Order[]
 
-  @@map("service_products")
+  @@map("materials")
 }
 
-// Order Model - Customer orders for services
+// Customer order — no login required
 model Order {
-  id              String      @id @default(cuid())
-  orderNumber     String      @unique @default(cuid())
-  
-  // Customer and Service
-  customerId      String
-  customer        User        @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  serviceId       String
-  service         ServiceProduct @relation(fields: [serviceId], references: [id], onDelete: Restrict)
-  
-  // Order Details
-  quantity        Int         @default(1)
-  customSize      String?     // e.g., "3x5 feet", "120x80 cm"
-  totalPrice      Float
-  
-  // Custom Design Requirements (Client uploads or provides specifications)
-  designRequirements String?  @db.Text // Text description of design needs
-  designFilesJson    String?  @db.Text // JSON array of file URLs/paths
-  specialInstructions String? @db.Text
-  
-  // Status and Dates
-  status          OrderStatus @default(PENDING)
-  deliveryDate    DateTime?
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
+  id          String @id @default(cuid())
+  orderNumber String @unique @default(cuid())
+
+  // Customer info (collected in order form)
+  customerName    String
+  customerPhone   String
+  customerEmail   String?
+  customerAddress String? @db.Text
+
+  // Material & sizing
+  materialId String
+  material   Material @relation(fields: [materialId], references: [id])
+  widthFt    Float
+  heightFt   Float
+  quantity   Int     @default(1)
+  totalPrice Float
+
+  // Design
+  designFileUrl String?
+  specialNotes  String? @db.Text
+
+  // Status
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
 
   @@map("orders")
 }
 
-// GalleryItem Model - Portfolio showcase (Grid View)
+// Portfolio / gallery
 model GalleryItem {
   id          String   @id @default(cuid())
   title       String
   description String?  @db.Text
-  imageUrl    String   // Main portfolio image
-  projectDate DateTime? // When the project was completed
-  category    String?  // e.g., "Signage", "Event Branding", "Corporate"
-  clientName  String?  // Optional client attribution
+  imageUrl    String
+  category    String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@map("gallery_items")
 }
 
-// CompanyProfile Model - About/Contact Information
-// Single record storing company information
+// Single-row company info
 model CompanyProfile {
-  id        String   @id @default(cuid())
-  
-  // Company Information
-  companyName String  @default("BrandON")
-  tagline     String?
-  about       String? @db.Text
-  
-  // Location and Contact
-  location         String? // Physical address for map integration
-  mapEmbedUrl      String? // Google Maps embed URL
-  phone            String?
-  email            String?
-  whatsappNumber   String?
-  
-  // Links
-  officialPageLink String? // Website or main landing page
-  facebookUrl      String?
-  instagramUrl     String?
-  twitterUrl       String?
-  linkedinUrl      String?
-  
-  // Business Hours
-  businessHours String? // e.g., "Mon-Sat: 9AM-6PM"
-  
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id             String  @id @default(cuid())
+  companyName    String  @default("BrandON")
+  tagline        String?
+  about          String? @db.Text
+  location       String?
+  phone          String?
+  email          String?
+  whatsappNumber String?
+  facebookUrl    String?
+  instagramUrl   String?
+  businessHours  String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 
   @@map("company_profile")
 }
