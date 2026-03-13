@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-// Admin auth import omitted for now, as requested to be done later.
+import { isAdmin } from '@/lib/adminAuth'; // Task 8.3: Adding admin protection
 
 // POST /api/orders — Public (Create a new order)
 export async function POST(request: NextRequest) {
@@ -12,43 +12,39 @@ export async function POST(request: NextRequest) {
       designFileUrl, specialNotes
     } = body;
 
-    // Basic validation
-    if (!customerName || !customerPhone || !materialId || !widthFt || !heightFt || !totalPrice) {
-      return NextResponse.json({ error: 'Required fields are missing' }, { status: 400 });
+    // Task 8.3: Strict Server-Side Validation
+    if (!customerName?.trim() || !customerPhone?.trim() || !materialId) {
+      return NextResponse.json({ error: 'Customer name, phone, and material are required' }, { status: 400 });
     }
 
-    
-    //  Generate Human-Readable Order Number
-    
-    const today = new Date();
-    
-    // Generate today's date string (e.g., "20260313")
-    const dateStr = today.toISOString().slice(0, 10).replace(/-/g, ''); 
+    // Logical Validation: Dimensions and Price cannot be zero or negative
+    if (parseFloat(widthFt) <= 0 || parseFloat(heightFt) <= 0 || parseFloat(totalPrice) < 0) {
+      return NextResponse.json({ error: 'Invalid dimensions or total price' }, { status: 400 });
+    }
 
-    // Get the start time of the current day
+    // Generate Human-Readable Order Number (BON-YYYYMMDD-00X)
+    const today = new Date();
+    const dateStr = today.toISOString().slice(0, 10).replace(/-/g, ''); 
     const startOfDay = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
-    // Count the number of orders placed today from the database
     const count = await prisma.order.count({
       where: { createdAt: { gte: startOfDay } },
     });
 
-    // Generate the ID format: BON-20260313-001
     const orderNumber = `BON-${dateStr}-${String(count + 1).padStart(3, '0')}`;
-    // ==========================================
 
-    // Save the order to the database
+    // Save the order to the database with sanitized data
     const order = await prisma.order.create({
       data: {
-        orderNumber, //newly generated ID
-        customerName,
-        customerPhone,
-        customerEmail,
-        customerAddress,
+        orderNumber,
+        customerName: customerName.trim(),
+        customerPhone: customerPhone.trim(),
+        customerEmail: customerEmail?.trim(),
+        customerAddress: customerAddress?.trim(),
         materialId,
         widthFt: parseFloat(widthFt),
         heightFt: parseFloat(heightFt),
-        quantity: quantity ? parseInt(quantity) : 1,
+        quantity: Math.max(1, parseInt(quantity) || 1), // Ensure at least 1 item
         totalPrice: parseFloat(totalPrice),
         designFileUrl,
         specialNotes,
@@ -64,15 +60,18 @@ export async function POST(request: NextRequest) {
 
 // GET /api/orders — Admin only (List all orders)
 export async function GET(request: NextRequest) {
+  // Task 8.3: Check if the requester is an admin
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 401 });
+  }
+
   try {
     const status = request.nextUrl.searchParams.get('status');
-    
-    // Filter by status if query parameter exists, otherwise fetch all
     const where = status ? { status: status as any } : {};
 
     const orders = await prisma.order.findMany({
       where,
-      include: { material: true }, // Include related material details with the order
+      include: { material: true }, 
       orderBy: { createdAt: 'desc' },
     });
 
@@ -85,6 +84,11 @@ export async function GET(request: NextRequest) {
 
 // PATCH /api/orders — Admin only (Update order status)
 export async function PATCH(request: NextRequest) {
+  // Task 8.3: Check if the requester is an admin
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 401 });
+  }
+
   try {
     const body = await request.json();
     const { id, status } = body;
