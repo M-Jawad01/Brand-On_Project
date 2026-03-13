@@ -1,11 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-
-// Helper function to check admin auth
-function isAdmin(request: NextRequest) {
-  const adminToken = request.cookies.get('admin_token')?.value;
-  return adminToken && adminToken === process.env.ADMIN_SECRET;
-}
+import { isAdmin } from '@/lib/adminAuth'; // imported from new helper file
 
 // GET /api/materials — Public (Return all active materials)
 export async function GET() {
@@ -43,6 +38,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(material, { status: 201 });
   } catch (error) {
+    console.error("Database Create Error: ", error);
     return NextResponse.json({ error: 'Failed to create material' }, { status: 500 });
   }
 }

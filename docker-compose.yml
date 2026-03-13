@@ -6,8 +6,8 @@ services:
     container_name: brand_on_postgres
     environment:
       POSTGRES_DB: brand_on_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: brandon
+      POSTGRES_PASSWORD: brandon_pass
     ports:
       - "5432:5432"
     volumes:
