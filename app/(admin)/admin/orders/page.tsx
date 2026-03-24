@@ -10,57 +10,117 @@ export default function AdminOrdersPage() {
       const res = await fetch("/api/orders");
       const data = await res.json();
       setOrders(data);
+    } catch (e) {
+      console.error(e);
+    } finally {
       setLoading(false);
-    } catch (error) {
-      console.error("Failed to fetch orders");
     }
   };
 
-  useEffect(() => { fetchOrders(); }, []);
+  useEffect(() => { 
+    fetchOrders(); 
+  }, []);
 
-  const updateStatus = async (orderId: string, newStatus: string) => {
-    const res = await fetch("/api/orders", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: orderId, status: newStatus }),
-    });
-    if (res.ok) fetchOrders();
+  const updateStatus = async (id: string, newStatus: string) => {
+    try {
+      const res = await fetch("/api/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id, status: newStatus }),
+      });
+      if (res.ok) fetchOrders();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  if (loading) return <div className="p-10 text-center text-indigo-600 font-bold text-xl">Loading Orders...</div>;
+  const deleteOrder = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this order?")) return;
+    try {
+      const res = await fetch("/api/orders", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id }),
+      });
+      if (res.ok) fetchOrders();
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  if (loading) return <div className="min-h-screen bg-brand-base flex items-center justify-center text-brand-primary font-black text-xl tracking-widest animate-pulse">LOADING ORDERS...</div>;
 
   return (
-    <div className="p-8 bg-gray-50 min-h-screen">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900">Customer Orders</h1>
-        <button onClick={fetchOrders} className="text-sm bg-white border px-3 py-1 rounded shadow-sm hover:bg-gray-100">Refresh List</button>
-      </div>
-
-      <div className="grid gap-6">
-        {orders.length === 0 ? (
-          <p className="text-center text-gray-500 py-10">No orders found yet!</p>
-        ) : (
-          orders.map((order: any) => (
-            <div key={order.id} className="bg-white p-6 rounded-xl shadow-md border-l-8 flex flex-col md:flex-row justify-between items-start md:items-center border-indigo-500">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <span className="text-xs font-bold uppercase tracking-wider px-2 py-1 rounded bg-indigo-100 text-indigo-700">Order #{order.id.slice(-5)}</span>
-                  <span className={`text-xs font-bold px-2 py-1 rounded-full ${order.status === 'COMPLETED' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>{order.status}</span>
+    <div className="min-h-screen bg-brand-base p-10 font-sans">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold text-white mb-10 tracking-tighter uppercase border-b border-brand-accent/30 pb-4">Customer Orders</h1>
+        
+        <div className="grid gap-6">
+          {orders.length === 0 ? (
+            <div className="text-center py-20 text-gray-500 font-medium">No orders found yet.</div>
+          ) : (
+            orders.map((order: any) => (
+              <div key={order.id} className="bg-brand-secondary-light p-8 rounded-xl border border-brand-accent/30 shadow-lg flex flex-col md:flex-row justify-between items-center hover:border-brand-primary/50 transition-all">
+                
+                <div className="flex-1 w-full mb-6 md:mb-0">
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-[10px] font-black text-brand-primary uppercase tracking-[0.2em] px-3 py-1 rounded border border-brand-primary/30 bg-brand-primary/10">
+                      ORDER #{order.id.slice(-5)}
+                    </span>
+                    <span className={`text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full border ${getStatusStyle(order.status)}`}>
+                      {order.status}
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-2xl font-black text-white tracking-tight mb-1">{order.customerName}</h3>
+                  <p className="text-gray-400 text-sm font-medium mb-1">Phone: {order.customerPhone || "N/A"}</p>
+                  <p className="text-gray-400 text-sm font-medium mb-5">Address: {order.customerAddress || "N/A"}</p>
+                  
+                  <div className="bg-brand-base/50 p-4 rounded-lg border border-brand-accent/20 inline-block w-full md:w-auto">
+                      <p className="text-sm text-gray-300 mb-1">Material: <span className="text-white font-bold">{order.material?.name || "Unknown"}</span></p>
+                      <p className="text-sm text-gray-300">Size: {order.widthFt}ft x {order.heightFt}ft | Qty: {order.quantity}</p>
+                  </div>
+                  
+                  <p className="text-4xl font-black text-brand-primary mt-6 tracking-tighter">৳{order.totalPrice}</p>
                 </div>
-                <h3 className="text-lg font-bold text-gray-800">{order.customerName} <span className="text-sm font-normal text-gray-500">({order.phone})</span></h3>
-                <p className="text-sm text-gray-600 mt-1">Material: <span className="font-semibold">{order.material?.name}</span> | Size: {order.width}" x {order.height}" | Qty: {order.quantity}</p>
-                <p className="text-indigo-600 font-bold mt-2 text-lg">Total: ${order.totalPrice}</p>
+                
+                <div className="flex flex-wrap gap-3 w-full md:w-auto md:flex-col justify-end">
+                  {order.status !== "CONFIRMED" && order.status !== "COMPLETED" && order.status !== "CANCELLED" && (
+                    <button onClick={() => updateStatus(order.id, "CONFIRMED")} className="bg-blue-600/20 text-blue-400 hover:bg-blue-600 hover:text-white border border-blue-600/50 font-black text-[10px] tracking-[0.2em] py-3 px-6 rounded-lg transition-all uppercase">
+                      CONFIRM ORDER
+                    </button>
+                  )}
+                  {order.status !== "COMPLETED" && order.status !== "CANCELLED" && (
+                    <button onClick={() => updateStatus(order.id, "COMPLETED")} className="bg-brand-primary/20 text-brand-primary hover:bg-brand-primary hover:text-white border border-brand-primary/50 font-black text-[10px] tracking-[0.2em] py-3 px-6 rounded-lg transition-all uppercase">
+                      MARK DONE
+                    </button>
+                  )}
+                  {order.status !== "CANCELLED" && order.status !== "COMPLETED" && (
+                    <button onClick={() => updateStatus(order.id, "CANCELLED")} className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/30 font-black text-[10px] tracking-[0.2em] py-3 px-6 rounded-lg transition-all uppercase">
+                      CANCEL ORDER
+                    </button>
+                  )}
+                  
+                  <button onClick={() => deleteOrder(order.id)} className="bg-gray-800 text-gray-400 hover:bg-red-600 hover:text-white border border-gray-700 hover:border-red-600 font-black text-[10px] tracking-[0.2em] py-3 px-6 rounded-lg transition-all uppercase mt-2 md:mt-4">
+                    DELETE ORDER
+                  </button>
+                </div>
+
               </div>
-              
-              <div className="flex flex-wrap gap-2 mt-4 md:mt-0">
-                <button onClick={() => updateStatus(order.id, "CONFIRMED")} className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-blue-700 transition">Confirm Order</button>
-                <button onClick={() => updateStatus(order.id, "COMPLETED")} className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-semibold hover:bg-green-700 transition">Mark Done</button>
-                <button onClick={() => updateStatus(order.id, "CANCELLED")} className="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-300 transition">Cancel</button>
-              </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
     </div>
   );
+}
+
+function getStatusStyle(status: string) {
+  switch (status) {
+    case "PENDING": return "bg-yellow-500/10 text-yellow-500 border-yellow-500/30";
+    case "CONFIRMED": return "bg-blue-500/10 text-blue-400 border-blue-500/30";
+    case "COMPLETED": return "bg-brand-primary/10 text-brand-primary border-brand-primary/30";
+    case "CANCELLED": return "bg-red-500/10 text-red-500 border-red-500/30";
+    default: return "bg-gray-500/10 text-gray-400 border-gray-500/30";
+  }
 }
