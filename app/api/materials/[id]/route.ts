@@ -1,25 +1,20 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
-  try {
-    const body = await req.json();
-    const { name, description, pricePerSqFt, isActive } = body;
+  const { name, pricePerSqFt } = await req.json();
+  const material = await prisma.material.update({
+    where: { id: params.id },
+    data: { name, pricePerSqFt: parseFloat(pricePerSqFt) },
+  });
+  return NextResponse.json(material);
+}
 
-    const updated = await prisma.material.update({
-      where: { id: params.id },
-      data: {
-        name,
-        description,
-        pricePerSqFt: parseFloat(pricePerSqFt),
-        isActive,
-      },
-    });
-
-    return NextResponse.json(updated);
-  } catch (error) {
-    return NextResponse.json({ error: 'Update failed' }, { status: 500 });
-  }
+export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+  await prisma.material.delete({
+    where: { id: params.id },
+  });
+  return NextResponse.json({ message: "Deleted" });
 }

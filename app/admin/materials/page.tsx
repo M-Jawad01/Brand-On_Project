@@ -1,52 +1,72 @@
-import { PrismaClient } from '@prisma/client';
+"use client";
+import { useState, useEffect } from "react";
 import Link from 'next/link';
 
-const prisma = new PrismaClient();
+export default function MaterialsPage() {
+  const [materials, setMaterials] = useState([]);
 
-export default async function MaterialsPage() {
-  const materials = await prisma.material.findMany({
-    orderBy: { createdAt: 'desc' },
-  });
+  const fetchMaterials = async () => {
+    const res = await fetch("/api/materials");
+    const data = await res.json();
+    setMaterials(data);
+  };
+
+  useEffect(() => {
+    fetchMaterials();
+  }, []);
+
+  const handleDelete = async (id: string) => {
+    if (!confirm("Are you sure you want to delete this material?")) return;
+    const res = await fetch(`/api/materials/${id}`, { method: "DELETE" });
+    if (res.ok) fetchMaterials();
+  };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-extrabold text-gray-900">Printing Materials</h1>
-        <Link 
-          href="/admin/materials/new" 
-          className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md font-medium transition"
-        >
-          + Add New Material
-        </Link>
-      </div>
+    <div className="min-h-screen bg-brand-base p-10 font-sans">
+      <div className="max-w-6xl mx-auto">
+        <div className="flex justify-between items-center mb-10">
+          <h1 className="text-3xl font-bold text-white tracking-tighter uppercase">Printing Materials</h1>
+          <Link href="/admin/materials/new" className="bg-brand-primary hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-all shadow-lg active:scale-95">
+            + Add New Material
+          </Link>
+        </div>
 
-      <div className="bg-white shadow-md rounded-lg overflow-hidden border border-gray-200">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Price/sqft</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {materials.map((item) => (
-              <tr key={item.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.name}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${item.pricePerSqFt}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${item.isActive ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-                    {item.isActive ? 'Active' : 'Inactive'}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button className="text-indigo-600 hover:text-indigo-900 mr-4">Edit</button>
-                </td>
+        <div className="bg-brand-secondary-light rounded-xl overflow-hidden border border-brand-accent/30 shadow-2xl">
+          <table className="w-full">
+            <thead className="bg-brand-secondary border-b border-brand-accent">
+              <tr>
+                <th className="text-left py-4 px-8 text-gray-400 font-bold uppercase text-[10px] tracking-[0.2em]">Material Name</th>
+                <th className="text-left py-4 px-8 text-gray-400 font-bold uppercase text-[10px] tracking-[0.2em]">Price / Sq.Ft</th>
+                <th className="text-right py-4 px-8 text-gray-400 font-bold uppercase text-[10px] tracking-[0.2em]">Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {materials.map((item: any) => (
+                <tr key={item.id} className="border-b border-brand-accent/20 hover:bg-brand-accent/5 transition-colors group">
+                  <td className="py-5 px-8 text-white font-semibold text-lg">{item.name}</td>
+                  <td className="py-5 px-8 text-brand-primary font-bold text-lg">৳{item.pricePerSqFt}</td>
+                  <td className="py-5 px-8 text-right flex justify-end gap-3">
+                    <Link 
+                      href={`/admin/materials/edit/${item.id}`} 
+                      className="text-brand-primary hover:text-white font-black text-xs tracking-widest border border-brand-primary/30 px-4 py-2 rounded hover:bg-brand-primary transition-all"
+                    >
+                      EDIT
+                    </Link>
+                    <button 
+                      onClick={() => handleDelete(item.id)}
+                      className="text-red-500 hover:text-white font-black text-xs tracking-widest border border-red-500/30 px-4 py-2 rounded hover:bg-red-500 transition-all"
+                    >
+                      DELETE
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {materials.length === 0 && (
+            <div className="p-20 text-center text-gray-500 font-medium">No materials found. Add some to get started!</div>
+          )}
+        </div>
       </div>
     </div>
   );

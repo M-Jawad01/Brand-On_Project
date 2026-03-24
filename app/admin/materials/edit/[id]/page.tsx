@@ -5,19 +5,24 @@ import { useRouter, useParams } from "next/navigation";
 export default function EditMaterialPage() {
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
+  const [loading, setLoading] = useState(true);
   const router = useRouter();
-  const params = useParams();
-  const id = params?.id as string;
+  const { id } = useParams();
 
   useEffect(() => {
-    if (!id) return;
     const fetchMaterial = async () => {
-      const res = await fetch(`/api/materials`);
-      const data = await res.json();
-      const material = data.find((m: any) => String(m.id) === String(id));
-      if (material) {
-        setName(material.name);
-        setPrice(material.pricePerSqFt.toString());
+      try {
+        const res = await fetch(`/api/materials`);
+        const data = await res.json();
+        const material = data.find((m: any) => String(m.id) === String(id));
+        if (material) {
+          setName(material.name);
+          setPrice(material.pricePerSqFt.toString());
+        }
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchMaterial();
@@ -32,8 +37,11 @@ export default function EditMaterialPage() {
     });
     if (res.ok) {
       router.push("/admin/materials");
+      router.refresh();
     }
   };
+
+  if (loading) return <div className="min-h-screen bg-brand-base flex items-center justify-center text-brand-primary font-black tracking-widest animate-pulse">LOADING DATA...</div>;
 
   return (
     <div className="min-h-screen bg-brand-base p-8 flex justify-center items-center font-sans">
@@ -65,7 +73,7 @@ export default function EditMaterialPage() {
             <button type="submit" className="flex-1 bg-brand-primary hover:bg-green-700 text-white font-black py-4 rounded-xl transition-all shadow-lg shadow-brand-primary/20 active:scale-95">
               UPDATE MATERIAL
             </button>
-            <button type="button" onClick={() => router.push('/admin/materials')} className="px-6 py-4 border border-brand-accent text-gray-400 font-bold rounded-xl hover:bg-brand-accent/20 transition-all">
+            <button type="button" onClick={() => router.back()} className="px-6 py-4 border border-brand-accent text-gray-400 font-bold rounded-xl hover:bg-brand-accent/20 transition-all">
               CANCEL
             </button>
           </div>
