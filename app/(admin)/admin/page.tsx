@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface Order {
   id: string;
@@ -31,7 +32,6 @@ export default function AdminDashboard() {
   const [error, setError] = useState('');
   const pathname = usePathname();
 
-  // Navigation items
   const navItems = [
     { href: '/admin', label: 'Dashboard', icon: '📊' },
     { href: '/admin/materials', label: 'Materials', icon: '📦' },
@@ -39,7 +39,6 @@ export default function AdminDashboard() {
     { href: '/admin/gallery', label: 'Gallery', icon: '🖼️' },
   ];
 
-  // Fetch orders on page load
   useEffect(() => {
     fetchOrders();
   }, []);
@@ -73,18 +72,15 @@ export default function AdminDashboard() {
     });
   }
 
-  // Handle logout
   async function handleLogout() {
     document.cookie = 'admin_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
     window.location.href = '/admin/login';
   }
 
-  // Get recent orders (last 5)
   const recentOrders = [...orders]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
     .slice(0, 5);
 
-  // Format currency
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-PK', {
       style: 'currency',
@@ -93,7 +89,6 @@ export default function AdminDashboard() {
     }).format(amount);
   };
 
-  // Get status badge color
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'pending':
@@ -109,27 +104,8 @@ export default function AdminDashboard() {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-brand-base">
-        <nav className="bg-brand-secondary-light border-b border-brand-accent-dark sticky top-0 z-50">
-          <div className="container mx-auto px-4">
-            <div className="flex items-center justify-between h-16">
-              <div className="flex items-center space-x-8">
-                <Link href="/admin" className="flex items-center space-x-2">
-                  <span className="text-xl font-bold text-white">BrandON</span>
-                  <span className="text-sm text-brand-primary">Admin</span>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </nav>
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center text-gray-400">Loading dashboard...</div>
-        </div>
-      </div>
-    );
-  }
+  // Show loading spinner while fetching data
+  if (loading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen bg-brand-base">
@@ -137,14 +113,12 @@ export default function AdminDashboard() {
       <nav className="bg-brand-secondary-light border-b border-brand-accent-dark sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            {/* Logo/Brand */}
             <div className="flex items-center space-x-8">
               <Link href="/admin" className="flex items-center space-x-2">
                 <span className="text-xl font-bold text-white">BrandON</span>
                 <span className="text-sm text-brand-primary">Admin</span>
               </Link>
 
-              {/* Desktop Navigation Links */}
               <div className="hidden md:flex space-x-1">
                 {navItems.map((item) => {
                   const isActive = pathname === item.href;
@@ -166,7 +140,6 @@ export default function AdminDashboard() {
               </div>
             </div>
 
-            {/* Logout Button */}
             <button
               onClick={handleLogout}
               className="flex items-center space-x-2 px-4 py-2 rounded-lg text-sm font-medium text-red-400 hover:text-red-300 hover:bg-red-500/10 transition-colors"
@@ -176,7 +149,6 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          {/* Mobile Navigation */}
           <div className="md:hidden flex overflow-x-auto py-2 space-x-2">
             {navItems.map((item) => {
               const isActive = pathname === item.href;
@@ -205,24 +177,19 @@ export default function AdminDashboard() {
         </div>
       </nav>
 
-      {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
           <p className="text-gray-400">Welcome back! Here's what's happening with your store.</p>
         </div>
 
-        {/* Error Message */}
         {error && (
           <div className="mb-6 bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg">
             {error}
           </div>
         )}
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          {/* Total Orders Card */}
           <div className="bg-gradient-to-br from-brand-secondary-light to-brand-secondary rounded-xl p-6 border border-brand-accent/30 hover:border-brand-primary/50 transition-all">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-brand-primary/20 rounded-lg">
@@ -236,7 +203,6 @@ export default function AdminDashboard() {
             <p className="text-gray-400 text-sm">Total Orders</p>
           </div>
 
-          {/* Pending Orders Card */}
           <div className="bg-gradient-to-br from-brand-secondary-light to-brand-secondary rounded-xl p-6 border border-brand-accent/30 hover:border-brand-primary/50 transition-all">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-yellow-500/20 rounded-lg">
@@ -250,7 +216,6 @@ export default function AdminDashboard() {
             <p className="text-gray-400 text-sm">Pending Orders</p>
           </div>
 
-          {/* Total Revenue Card */}
           <div className="bg-gradient-to-br from-brand-secondary-light to-brand-secondary rounded-xl p-6 border border-brand-accent/30 hover:border-brand-primary/50 transition-all">
             <div className="flex items-center justify-between mb-4">
               <div className="p-3 bg-green-500/20 rounded-lg">
@@ -265,31 +230,20 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Quick Actions & Recent Orders */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Quick Actions */}
           <div className="lg:col-span-1">
             <div className="bg-brand-secondary-light rounded-xl p-6 border border-brand-accent/30">
               <h2 className="text-xl font-semibold text-white mb-4">Quick Actions</h2>
               <div className="space-y-3">
-                <Link
-                  href="/admin/materials"
-                  className="flex items-center justify-between p-3 bg-brand-base rounded-lg hover:bg-brand-accent/20 transition group"
-                >
+                <Link href="/admin/materials" className="flex items-center justify-between p-3 bg-brand-base rounded-lg hover:bg-brand-accent/20 transition group">
                   <span className="text-gray-300 group-hover:text-white">Manage Materials</span>
                   <span className="text-brand-primary">→</span>
                 </Link>
-                <Link
-                  href="/admin/orders"
-                  className="flex items-center justify-between p-3 bg-brand-base rounded-lg hover:bg-brand-accent/20 transition group"
-                >
+                <Link href="/admin/orders" className="flex items-center justify-between p-3 bg-brand-base rounded-lg hover:bg-brand-accent/20 transition group">
                   <span className="text-gray-300 group-hover:text-white">View All Orders</span>
                   <span className="text-brand-primary">→</span>
                 </Link>
-                <Link
-                  href="/admin/gallery"
-                  className="flex items-center justify-between p-3 bg-brand-base rounded-lg hover:bg-brand-accent/20 transition group"
-                >
+                <Link href="/admin/gallery" className="flex items-center justify-between p-3 bg-brand-base rounded-lg hover:bg-brand-accent/20 transition group">
                   <span className="text-gray-300 group-hover:text-white">Manage Gallery</span>
                   <span className="text-brand-primary">→</span>
                 </Link>
@@ -297,7 +251,6 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Recent Orders */}
           <div className="lg:col-span-2">
             <div className="bg-brand-secondary-light rounded-xl border border-brand-accent/30 overflow-hidden">
               <div className="p-6 border-b border-brand-accent/30">
@@ -318,28 +271,17 @@ export default function AdminDashboard() {
                   <table className="w-full">
                     <thead className="bg-brand-base border-b border-brand-accent/30">
                       <tr>
-                        <th className="text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                          Order #
-                        </th>
-                        <th className="text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                          Customer
-                        </th>
-                        <th className="text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                          Amount
-                        </th>
-                        <th className="text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">
-                          Status
-                        </th>
+                        <th className="text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Order #</th>
+                        <th className="text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Customer</th>
+                        <th className="text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Amount</th>
+                        <th className="text-left px-6 py-3 text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-brand-accent/30">
                       {recentOrders.map((order) => (
                         <tr key={order.id} className="hover:bg-brand-accent/10 transition">
                           <td className="px-6 py-4">
-                            <Link 
-                              href={`/admin/orders/${order.id}`}
-                              className="text-brand-primary hover:text-brand-primary/80 font-mono text-sm"
-                            >
+                            <Link href={`/admin/orders/${order.id}`} className="text-brand-primary hover:text-brand-primary/80 font-mono text-sm">
                               {order.orderNumber}
                             </Link>
                           </td>
@@ -350,9 +292,7 @@ export default function AdminDashboard() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                            <span className="text-white text-sm font-semibold">
-                              {formatCurrency(order.totalPrice)}
-                            </span>
+                            <span className="text-white text-sm font-semibold">{formatCurrency(order.totalPrice)}</span>
                           </td>
                           <td className="px-6 py-4">
                             <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(order.status)}`}>
@@ -368,10 +308,7 @@ export default function AdminDashboard() {
               
               {recentOrders.length > 0 && (
                 <div className="p-4 border-t border-brand-accent/30 text-center">
-                  <Link
-                    href="/admin/orders"
-                    className="text-brand-primary hover:text-brand-primary/80 text-sm font-medium inline-flex items-center gap-1"
-                  >
+                  <Link href="/admin/orders" className="text-brand-primary hover:text-brand-primary/80 text-sm font-medium inline-flex items-center gap-1">
                     View All Orders
                     <span>→</span>
                   </Link>
