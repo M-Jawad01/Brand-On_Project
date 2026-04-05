@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import toast from 'react-hot-toast';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 interface GalleryItem {
@@ -22,7 +23,6 @@ export default function AdminGalleryPage() {
   const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState('');
   const pathname = usePathname();
 
   const navItems = [
@@ -39,10 +39,10 @@ export default function AdminGalleryPage() {
         const data = await res.json();
         setGalleryItems(data);
       } else {
-        setError('Failed to fetch gallery items');
+        toast.error('Failed to fetch gallery items');
       }
     } catch (err) {
-      setError('Error loading gallery');
+      toast.error('Error loading gallery');
     } finally {
       setLoading(false);
     }
@@ -66,12 +66,12 @@ export default function AdminGalleryPage() {
       
       if (res.ok) {
         setImageUrl(data.url);
-        setError('');
+        toast.success('Image uploaded successfully!');
       } else {
-        setError(data.error || 'Upload failed');
+        toast.error(data.error || 'Upload failed');
       }
     } catch (err) {
-      setError('Error uploading image');
+      toast.error('Error uploading image');
     } finally {
       setUploading(false);
     }
@@ -80,7 +80,7 @@ export default function AdminGalleryPage() {
   async function handleAddItem(e: React.FormEvent) {
     e.preventDefault();
     if (!title || !category || !imageUrl) {
-      setError('Please fill in all fields and upload an image');
+      toast.error('Please fill in all fields and upload an image');
       return;
     }
 
@@ -93,18 +93,18 @@ export default function AdminGalleryPage() {
       });
 
       if (res.ok) {
+        toast.success('Gallery item added successfully!');
         setTitle('');
         setCategory('');
         setImageUrl('');
         setShowAddForm(false);
-        setError('');
         fetchGallery();
       } else {
         const data = await res.json();
-        setError(data.error || 'Failed to add item');
+        toast.error(data.error || 'Failed to add item');
       }
     } catch (err) {
-      setError('Error adding item');
+      toast.error('Error adding item');
     } finally {
       setSubmitting(false);
     }
@@ -117,26 +117,27 @@ export default function AdminGalleryPage() {
       const res = await fetch(`/api/gallery?id=${id}`, { method: 'DELETE' });
       if (res.ok) {
         setGalleryItems(galleryItems.filter(item => item.id !== id));
-        setError('');
+        toast.success('Gallery item deleted successfully!');
       } else {
-        setError('Failed to delete item');
+        toast.error('Failed to delete item');
       }
     } catch (err) {
-      setError('Error deleting item');
+      toast.error('Error deleting item');
     }
   }
 
   async function handleLogout() {
     document.cookie = 'admin_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-    window.location.href = '/admin/login';
+    toast.success('Logged out successfully');
+    setTimeout(() => {
+      window.location.href = '/admin/login';
+    }, 1000);
   }
 
-  // Show loading spinner while fetching data
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen bg-brand-base">
-      {/* Navigation */}
       <nav className="bg-brand-secondary-light border-b border-brand-accent-dark sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
@@ -189,12 +190,6 @@ export default function AdminGalleryPage() {
             {showAddForm ? 'Cancel' : '+ Add New Item'}
           </button>
         </div>
-
-        {error && (
-          <div className="mb-6 bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-lg">
-            {error}
-          </div>
-        )}
 
         {showAddForm && (
           <div className="mb-8 bg-brand-secondary-light rounded-xl p-6 border border-brand-accent/30">
@@ -254,7 +249,6 @@ export default function AdminGalleryPage() {
                     setTitle('');
                     setCategory('');
                     setImageUrl('');
-                    setError('');
                   }}
                   className="bg-gray-600 hover:bg-gray-700 text-white font-semibold px-6 py-2 rounded-lg transition"
                 >

@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import LoadingSpinner from '@/components/LoadingSpinner';
+import toast from 'react-hot-toast';
 
 interface Order {
   id: string;
@@ -43,22 +44,22 @@ export default function AdminDashboard() {
     fetchOrders();
   }, []);
 
-  async function fetchOrders() {
-    try {
-      const res = await fetch('/api/orders');
-      if (res.ok) {
-        const data = await res.json();
-        setOrders(data);
-        calculateStats(data);
-      } else {
-        setError('Failed to fetch orders');
-      }
-    } catch (err) {
-      setError('Error loading orders');
-    } finally {
-      setLoading(false);
+ async function fetchOrders() {
+  try {
+    const res = await fetch('/api/orders');
+    if (res.ok) {
+      const data = await res.json();
+      setOrders(data);
+      calculateStats(data);
+    } else {
+      toast.error('Failed to fetch orders');
     }
+  } catch (err) {
+    toast.error('Error loading orders');
+  } finally {
+    setLoading(false);
   }
+}
 
   function calculateStats(ordersData: Order[]) {
     const totalOrders = ordersData.length;
@@ -72,10 +73,13 @@ export default function AdminDashboard() {
     });
   }
 
-  async function handleLogout() {
-    document.cookie = 'admin_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+async function handleLogout() {
+  document.cookie = 'admin_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+  toast.success('Logged out successfully');
+  setTimeout(() => {
     window.location.href = '/admin/login';
-  }
+  }, 1000);
+}
 
   const recentOrders = [...orders]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
