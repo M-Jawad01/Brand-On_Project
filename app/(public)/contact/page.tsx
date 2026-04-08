@@ -1,4 +1,40 @@
+'use client';
+
+import { useState } from 'react';
+import toast from 'react-hot-toast';
+
 export default function ContactPage() {
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!formData.name.trim() || !formData.phone.trim() || !formData.message.trim()) {
+      toast.error('Please fill in all required fields');
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+      if (res.ok) {
+        toast.success('Message sent successfully!');
+        setSubmitted(true);
+        setFormData({ name: '', email: '', phone: '', message: '' });
+      } else {
+        toast.error('Failed to send message. Please try again.');
+      }
+    } catch {
+      toast.error('Something went wrong. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -22,7 +58,17 @@ export default function ContactPage() {
             {/* Contact Form */}
             <div className="bg-brand-secondary p-8 rounded-lg">
               <h2 className="text-2xl font-bold text-white mb-6">Send us a Message</h2>
-              <form className="space-y-6">
+              {submitted ? (
+                <div className="text-center py-8">
+                  <svg className="w-16 h-16 text-brand-primary mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <p className="text-white text-lg font-semibold mb-2">Message Sent!</p>
+                  <p className="text-gray-400 mb-4">We&apos;ll get back to you within 24 hours.</p>
+                  <button onClick={() => setSubmitted(false)} className="text-brand-primary hover:underline text-sm">Send another message</button>
+                </div>
+              ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label className="block text-sm text-gray-400 mb-2">
                     Full Name <span className="text-red-500">*</span>
@@ -30,6 +76,8 @@ export default function ContactPage() {
                   <input
                     type="text"
                     required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     className="w-full px-4 py-3 bg-brand-base border border-brand-accent rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-primary"
                     placeholder="Enter your name"
                   />
@@ -38,11 +86,12 @@ export default function ContactPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-gray-400 mb-2">
-                      Email <span className="text-red-500">*</span>
+                      Email
                     </label>
                     <input
                       type="email"
-                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       className="w-full px-4 py-3 bg-brand-base border border-brand-accent rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-primary"
                       placeholder="your@email.com"
                     />
@@ -54,6 +103,8 @@ export default function ContactPage() {
                     <input
                       type="tel"
                       required
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="w-full px-4 py-3 bg-brand-base border border-brand-accent rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-primary"
                       placeholder="+92 300 1234567"
                     />
@@ -67,6 +118,8 @@ export default function ContactPage() {
                   <textarea
                     required
                     rows={6}
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                     className="w-full px-4 py-3 bg-brand-base border border-brand-accent rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-brand-primary resize-none"
                     placeholder="Tell us about your project..."
                   />
@@ -74,11 +127,13 @@ export default function ContactPage() {
 
                 <button
                   type="submit"
-                  className="w-full bg-brand-primary hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg transition"
+                  disabled={submitting}
+                  className="w-full bg-brand-primary hover:bg-green-700 text-white font-bold py-4 px-8 rounded-lg transition disabled:opacity-50"
                 >
-                  Send Message
+                  {submitting ? 'Sending...' : 'Send Message'}
                 </button>
               </form>
+              )}
             </div>
 
             {/* Contact Information */}

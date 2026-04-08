@@ -38,6 +38,9 @@ next-env.d.ts
 # prisma
 .env.local
 
+# uploads
+/public/uploads
+
 # docs
 /docs
 /deliverables

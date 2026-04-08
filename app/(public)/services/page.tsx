@@ -1,6 +1,15 @@
 import Link from 'next/link';
+import prisma from '@/lib/prisma';
+import MaterialCard from '@/components/MaterialCard';
 
-export default function ServicesPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function ServicesPage() {
+  const materials = await prisma.material.findMany({
+    where: { isActive: true },
+    orderBy: { createdAt: 'desc' },
+  });
+
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
@@ -17,16 +26,24 @@ export default function ServicesPage() {
         </div>
       </section>
 
-      {/* Placeholder — will be populated from DB */}
+      {/* Materials Grid */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center py-20 text-gray-400">
-            <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-            </svg>
-            <p className="text-lg">Materials will be loaded from the database.</p>
-            <p className="text-sm mt-2">Admin needs to add materials first.</p>
-          </div>
+          {materials.length === 0 ? (
+            <div className="text-center py-20 text-gray-400">
+              <svg className="w-16 h-16 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+              </svg>
+              <p className="text-lg">No materials available yet.</p>
+              <p className="text-sm mt-2">Check back soon — we&apos;re updating our catalog.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {materials.map((material) => (
+                <MaterialCard key={material.id} material={material} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

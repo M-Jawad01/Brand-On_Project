@@ -9,7 +9,7 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 interface GalleryItem {
   id: string;
   title: string;
-  category: string;
+  category: string | null;
   imageUrl: string;
   createdAt?: string;
 }

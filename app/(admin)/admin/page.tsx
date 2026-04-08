@@ -11,7 +11,7 @@ interface Order {
   orderNumber: string;
   customerName: string;
   customerEmail: string;
-  status: 'pending' | 'processing' | 'completed' | 'cancelled';
+  status: 'PENDING' | 'CONFIRMED' | 'IN_PROGRESS' | 'COMPLETED' | 'CANCELLED';
   totalPrice: number;
   createdAt: string;
 }
@@ -63,7 +63,7 @@ export default function AdminDashboard() {
 
   function calculateStats(ordersData: Order[]) {
     const totalOrders = ordersData.length;
-    const pendingOrders = ordersData.filter(order => order.status === 'pending').length;
+    const pendingOrders = ordersData.filter(order => order.status === 'PENDING').length;
     const totalRevenue = ordersData.reduce((sum, order) => sum + order.totalPrice, 0);
     
     setStats({
@@ -95,13 +95,15 @@ async function handleLogout() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'pending':
+      case 'PENDING':
         return 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30';
-      case 'processing':
+      case 'CONFIRMED':
         return 'bg-blue-500/20 text-blue-400 border-blue-500/30';
-      case 'completed':
+      case 'IN_PROGRESS':
+        return 'bg-purple-500/20 text-purple-400 border-purple-500/30';
+      case 'COMPLETED':
         return 'bg-green-500/20 text-green-400 border-green-500/30';
-      case 'cancelled':
+      case 'CANCELLED':
         return 'bg-red-500/20 text-red-400 border-red-500/30';
       default:
         return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
@@ -300,7 +302,7 @@ async function handleLogout() {
                           </td>
                           <td className="px-6 py-4">
                             <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full border ${getStatusColor(order.status)}`}>
-                              {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                              {order.status.replace('_', ' ')}
                             </span>
                           </td>
                         </tr>
