@@ -1,5 +1,3 @@
-// BrandON - Custom Banner Printing Platform
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,7 +15,6 @@ enum OrderStatus {
   CANCELLED
 }
 
-// Banner material (e.g. Star Flex, Vinyl, PVC, Backlit)
 model Material {
   id           String   @id @default(cuid())
   name         String   @unique
@@ -27,44 +24,33 @@ model Material {
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-
-  orders Order[]
+  orders       Order[]
 
   @@map("materials")
 }
 
-// Customer order — no login required
 model Order {
-  id          String @id @default(cuid())
-  orderNumber String @unique @default(cuid())
-
-  // Customer info (collected in order form)
+  id              String      @id @default(cuid())
+  orderNumber     String      @unique @default(cuid())
   customerName    String
   customerPhone   String
   customerEmail   String?
-  customerAddress String? @db.Text
-
-  // Material & sizing
-  materialId String
-  material   Material @relation(fields: [materialId], references: [id])
-  widthFt    Float
-  heightFt   Float
-  quantity   Int     @default(1)
-  totalPrice Float
-
-  // Design
-  designFileUrl String?
-  specialNotes  String? @db.Text
-
-  // Status
-  status    OrderStatus @default(PENDING)
-  createdAt DateTime    @default(now())
-  updatedAt DateTime    @updatedAt
+  customerAddress String?     @db.Text
+  materialId      String
+  material        Material    @relation(fields: [materialId], references: [id])
+  widthFt         Float
+  heightFt        Float
+  quantity        Int         @default(1)
+  totalPrice      Float
+  designFileUrl   String?
+  specialNotes    String?     @db.Text
+  status          OrderStatus @default(PENDING)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
 
   @@map("orders")
 }
 
-// Portfolio / gallery
 model GalleryItem {
   id          String   @id @default(cuid())
   title       String
@@ -77,12 +63,11 @@ model GalleryItem {
   @@map("gallery_items")
 }
 
-// Single-row company info
 model CompanyProfile {
-  id             String  @id @default(cuid())
-  companyName    String  @default("BrandON")
+  id             String   @id @default(cuid())
+  companyName    String   @default("BrandON")
   tagline        String?
-  about          String? @db.Text
+  about          String?  @db.Text
   location       String?
   phone          String?
   email          String?
