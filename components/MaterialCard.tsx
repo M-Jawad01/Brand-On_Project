@@ -9,9 +9,10 @@ interface MaterialCardProps {
     pricePerSqFt: number;
     imageUrl: string | null;
   };
+  isAdmin?: boolean;
 }
 
-export default function MaterialCard({ material }: MaterialCardProps) {
+export default function MaterialCard({ material, isAdmin = false }: MaterialCardProps) {
   return (
     <div className="group bg-brand-secondary-light rounded-xl overflow-hidden border border-brand-accent/30 hover:border-brand-primary/50 transition-all duration-300 hover:transform hover:scale-[1.02]">
       {/* Image Section */}
@@ -60,12 +61,14 @@ export default function MaterialCard({ material }: MaterialCardProps) {
             <span className="text-gray-500 text-xs ml-1">/sqft</span>
           </div>
           
-          <Link
-            href={`/order?material=${material.id}`}
-            className="bg-brand-primary hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors duration-200 hover:shadow-lg"
-          >
-            Order Now →
-          </Link>
+          {!isAdmin && (
+            <Link
+              href={`/order?material=${material.id}`}
+              className="bg-brand-primary hover:bg-green-700 text-white text-sm font-semibold px-4 py-2 rounded-lg transition-colors duration-200 hover:shadow-lg"
+            >
+              Order Now →
+            </Link>
+          )}
         </div>
       </div>
     </div>

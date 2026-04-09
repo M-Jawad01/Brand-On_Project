@@ -38,6 +38,7 @@ export default function AdminDashboard() {
     { href: '/admin/materials', label: 'Materials', icon: '📦' },
     { href: '/admin/orders', label: 'Orders', icon: '🛒' },
     { href: '/admin/gallery', label: 'Gallery', icon: '🖼️' },
+    { href: '/admin/messages', label: 'Messages', icon: '💬' },
   ];
 
   useEffect(() => {
@@ -64,7 +65,9 @@ export default function AdminDashboard() {
   function calculateStats(ordersData: Order[]) {
     const totalOrders = ordersData.length;
     const pendingOrders = ordersData.filter(order => order.status === 'PENDING').length;
-    const totalRevenue = ordersData.reduce((sum, order) => sum + order.totalPrice, 0);
+    const totalRevenue = ordersData
+      .filter(order => order.status !== 'CANCELLED')
+      .reduce((sum, order) => sum + order.totalPrice, 0);
     
     setStats({
       totalOrders,
@@ -251,6 +254,10 @@ async function handleLogout() {
                 </Link>
                 <Link href="/admin/gallery" className="flex items-center justify-between p-3 bg-brand-base rounded-lg hover:bg-brand-accent/20 transition group">
                   <span className="text-gray-300 group-hover:text-white">Manage Gallery</span>
+                  <span className="text-brand-primary">→</span>
+                </Link>
+                <Link href="/admin/messages" className="flex items-center justify-between p-3 bg-brand-base rounded-lg hover:bg-brand-accent/20 transition group">
+                  <span className="text-gray-300 group-hover:text-white">View Messages</span>
                   <span className="text-brand-primary">→</span>
                 </Link>
               </div>

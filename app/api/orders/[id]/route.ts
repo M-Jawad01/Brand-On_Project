@@ -1,3 +1,4 @@
+import { isAdmin } from '@/lib/adminAuth'
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 
@@ -9,15 +10,20 @@ const VALID_TRANSITIONS: Record<string, string[]> = {
   CANCELLED: [],
 }
 
-// GET /api/orders/[id] — get a single order
+// GET /api/orders/[id] — get a single order (admin only)
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // SECURITY CHECK: Only Admin can view individual order details
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 401 });
+  }
+
   try {
     const order = await prisma.order.findUnique({
       where: { id: params.id },
-      include: { material: true },
+      include: { material: { select: { id: true, name: true, pricePerSqFt: true } } },
     })
 
     if (!order) {
@@ -35,6 +41,11 @@ export async function PATCH(
   request: NextRequest,
   { params }: { params: { id: string } }
 ) {
+  // SECURITY CHECK: Only Admin can update order status
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 401 });
+  }
+
   try {
     const { status } = await request.json()
 
@@ -62,7 +73,7 @@ export async function PATCH(
     const updated = await prisma.order.update({
       where: { id: params.id },
       data: { status },
-      include: { material: { select: { name: true } } },
+      include: { material: { select: { id: true, name: true, pricePerSqFt: true } } },
     })
 
     return NextResponse.json(updated)

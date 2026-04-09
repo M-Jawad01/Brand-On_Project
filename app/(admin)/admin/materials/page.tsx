@@ -32,6 +32,7 @@ export default function AdminMaterialsPage() {
     { href: '/admin/materials', label: 'Materials', icon: '📦' },
     { href: '/admin/orders', label: 'Orders', icon: '🛒' },
     { href: '/admin/gallery', label: 'Gallery', icon: '🖼️' },
+    { href: '/admin/messages', label: 'Messages', icon: '💬' },
   ];
 
   useEffect(() => {
@@ -238,7 +239,7 @@ export default function AdminMaterialsPage() {
                 <label className="block text-sm font-medium text-gray-300 mb-2">Material Image</label>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg"
                   onChange={handleImageUpload}
                   className="w-full bg-brand-base border border-brand-accent rounded-lg px-4 py-2 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-green-700"
                 />
@@ -286,7 +287,7 @@ export default function AdminMaterialsPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {materials.map((material) => (
               <div key={material.id} className="relative">
-                <MaterialCard material={material} />
+                <MaterialCard material={material} isAdmin={true} />
                 <button
                   onClick={() => handleDeleteMaterial(material.id)}
                   className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white text-xs font-medium px-2 py-1 rounded-lg transition"

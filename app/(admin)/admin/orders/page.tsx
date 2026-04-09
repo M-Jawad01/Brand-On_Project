@@ -47,6 +47,7 @@ export default function AdminOrdersPage() {
     { href: '/admin/materials', label: 'Materials', icon: '📦' },
     { href: '/admin/orders', label: 'Orders', icon: '🛒' },
     { href: '/admin/gallery', label: 'Gallery', icon: '🖼️' },
+    { href: '/admin/messages', label: 'Messages', icon: '💬' },
   ];
 
   useEffect(() => {

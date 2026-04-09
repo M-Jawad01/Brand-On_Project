@@ -31,13 +31,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Generate a unique filename to prevent collisions and path traversal
-    const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg'
-    const safeName = `${crypto.randomUUID()}.${ext}`
+    const safeName = `${crypto.randomUUID()}.jpg`
 
     await mkdir(UPLOAD_DIR, { recursive: true })
 
     const bytes = await file.arrayBuffer()
     const buffer = Buffer.from(bytes)
+
+    // Verify actual file content is JPG (magic bytes: FF D8 FF)
+    if (buffer.length < 3 || buffer[0] !== 0xFF || buffer[1] !== 0xD8 || buffer[2] !== 0xFF) {
+      return NextResponse.json(
+        { error: 'Invalid file content. Only genuine JPG files are allowed.' },
+        { status: 400 }
+      )
+    }
+
     await writeFile(path.join(UPLOAD_DIR, safeName), buffer)
 
     const url = `/uploads/${safeName}`

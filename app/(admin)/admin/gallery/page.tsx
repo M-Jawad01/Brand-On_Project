@@ -19,6 +19,7 @@ export default function AdminGalleryPage() {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
   const [category, setCategory] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -30,6 +31,7 @@ export default function AdminGalleryPage() {
     { href: '/admin/materials', label: 'Materials', icon: '📦' },
     { href: '/admin/orders', label: 'Orders', icon: '🛒' },
     { href: '/admin/gallery', label: 'Gallery', icon: '🖼️' },
+    { href: '/admin/messages', label: 'Messages', icon: '💬' },
   ];
 
   const fetchGallery = async () => {
@@ -89,12 +91,13 @@ export default function AdminGalleryPage() {
       const res = await fetch('/api/gallery', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title, category, imageUrl }),
+        body: JSON.stringify({ title, description: description || null, category, imageUrl }),
       });
 
       if (res.ok) {
         toast.success('Gallery item added successfully!');
         setTitle('');
+        setDescription('');
         setCategory('');
         setImageUrl('');
         setShowAddForm(false);
@@ -206,6 +209,16 @@ export default function AdminGalleryPage() {
                 />
               </div>
               <div>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Description</label>
+                <textarea
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  rows={2}
+                  className="w-full bg-brand-base border border-brand-accent rounded-lg px-4 py-2 text-white focus:outline-none focus:border-brand-primary"
+                  placeholder="Optional description of the gallery item"
+                />
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-gray-300 mb-2">Category *</label>
                 <input
                   type="text"
@@ -220,7 +233,7 @@ export default function AdminGalleryPage() {
                 <label className="block text-sm font-medium text-gray-300 mb-2">Image *</label>
                 <input
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg"
                   onChange={handleImageUpload}
                   className="w-full bg-brand-base border border-brand-accent rounded-lg px-4 py-2 text-white file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-green-700"
                 />
@@ -247,6 +260,7 @@ export default function AdminGalleryPage() {
                   onClick={() => {
                     setShowAddForm(false);
                     setTitle('');
+                    setDescription('');
                     setCategory('');
                     setImageUrl('');
                   }}

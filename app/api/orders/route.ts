@@ -55,11 +55,15 @@ export async function POST(request: NextRequest) {
     const optionsArray = body.finishingOptions || [];
     
     if (Array.isArray(optionsArray)) {
-      optionsArray.forEach((opt: string) => {
-        if (finishingRates[opt]) {
-          finishingCost += finishingRates[opt] * widthFt * heightFt * quantity;
+      const allowedOptions = Object.keys(finishingRates);
+      for (const opt of optionsArray) {
+        if (typeof opt !== 'string' || !allowedOptions.includes(opt)) {
+          return NextResponse.json({ error: `Invalid finishing option: ${opt}` }, { status: 400 });
         }
-      });
+        finishingCost += finishingRates[opt] * widthFt * heightFt * quantity;
+      }
+    } else if (optionsArray.length !== undefined) {
+      return NextResponse.json({ error: 'finishingOptions must be an array' }, { status: 400 });
     }
 
     // Material price (Base price) + Finishing price
@@ -92,7 +96,7 @@ export async function POST(request: NextRequest) {
         heightFt,
         quantity,
         totalPrice,
-        designFileUrl: body.designFileUrl || null,
+        designFileUrl: body.designFileUrl?.startsWith('/uploads/') ? body.designFileUrl : null,
         specialNotes: body.specialNotes?.trim() || null,
         finishingOptions: optionsArray.length > 0 ? optionsArray.join(', ') : null,
       },
