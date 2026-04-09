@@ -55,6 +55,7 @@ model Order {
   // Design
   designFileUrl String?
   specialNotes  String? @db.Text
+  finishingOptions String?
 
   // Status
   status    OrderStatus @default(PENDING)

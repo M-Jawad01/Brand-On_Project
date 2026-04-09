@@ -1,3 +1,4 @@
+import { isAdmin } from '@/lib/adminAuth'
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
 import { validateMaterialInput } from '@/lib/validation'
@@ -20,6 +21,11 @@ export async function GET(request: NextRequest) {
 
 // POST /api/materials — add a new material (admin)
 export async function POST(request: NextRequest) {
+  // SECURITY CHECK: only admin can add materials 
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 401 })
+  }
+
   try {
     const body = await request.json()
 
@@ -48,6 +54,11 @@ export async function POST(request: NextRequest) {
 
 // DELETE /api/materials?id=xxx — delete a material (admin)
 export async function DELETE(request: NextRequest) {
+  // SECURITY CHECK: only admin can delete materials
+  if (!isAdmin(request)) {
+    return NextResponse.json({ error: 'Unauthorized: Admin access required' }, { status: 401 })
+  }
+
   try {
     const id = request.nextUrl.searchParams.get('id')
     if (!id) {
