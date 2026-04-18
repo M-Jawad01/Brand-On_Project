@@ -1,0 +1,16 @@
+• Update all previous chapters and sections based on the final product, user feedback, and the comments we provided earlier.
+• Add new chapters/sections to cover scheduling, estimation (KLOC, FP, effort, duration, etc.), and testing.
+• Include a necessary appendix at the end of the report. Please provide the final links to the code repository and Google Drive.
+• The report should be well-formatted and free of plagiarism.
+
+
+Sir's feedback on previous report submission:
+1. Report should have a table of content. 
+
+2. Missing description in couple of diagrams
+
+3. Missing client feedback video.
+
+4. Missing Design pattern in the report though you discussed about it in the demo video. 
+
+5. Demo video should show the interaction/running app.

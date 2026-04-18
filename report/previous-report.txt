@@ -1,0 +1,355 @@
+EAST WEST UNIVERSITY
+Department of Computer Science and Engineering (CSE)  
+Semester: Fall2025, B.Sc. in CSE
+
+Software Engineering, CSE412
+
+
+
+Submitted to: 
+Dr. Mohammad Mahdi Hassan
+Associate Professor
+Department of Computer Science & Engineering
+
+
+Submitted by: Group-13(Team Trelet)
+Mahir Faysal Haque Dipto (2022-2-60-044)
+Sonia Binte Siraj (2022-2-60-087)
+Sumaya Binte Naser (2022-2-60-155)
+Raima Husna (2022-2-60-052)
+Mubashir Jawad (2022-2-60-039)
+
+
+
+
+
+Introduction
+Problem Statement
+Local banner printing shops operate entirely offline. Customers must visit the shop in person to browse material options, negotiate prices, and place orders. There is no way for customers to see available materials, compare prices, or track order status remotely. This creates inconvenience for customers and limits the shop's reach.
+Proposed Solution
+BrandON is a web-based platform that digitalizes the banner ordering workflow. It allows customers to:
+    • Browse available banner materials (Star Flex, Vinyl, PVC, Backlit, etc.) with transparent per-square-foot pricing
+    • Specify custom dimensions (width × height in feet) and quantity
+    • Upload a design file (image/PDF)
+    • Place an order online with automatic price calculation
+    • Receive order confirmation via email
+The shop admin can:
+    • Add, edit, and manage banner materials and pricing
+    • View and process incoming orders (Pending → Confirmed → In Progress → Completed)
+    • Manage a portfolio/gallery of past work
+    • Update company profile information
+
+
+
+
+
+
+
+
+Technology Choices
+Layer
+Technology
+Reason
+Frontend
+Next.js 14 (React)
+Server-side rendering, file-based routing, App Router
+Language
+TypeScript
+Type safety catches errors before runtime
+Styling
+Tailwind CSS
+Utility-first CSS, no separate stylesheet files needed
+ORM
+Prisma
+Type-safe database queries, schema-as-code, migrations
+Database
+PostgreSQL
+Reliable relational DB, runs in Docker for consistency
+Testing
+Jest + ts-jest
+Industry-standard test runner with TypeScript support
+Deployment
+Docker Compose
+One command to start the database
+Project Scope
+The platform is designed for a single banner printing shop. Multi-store or franchise support is explicitly out of scope. Payment integration is not included — the shop operates on Cash on Delivery (COD). User registration is not required for customers; orders are placed with just a name and phone number.
+
+
+
+
+
+
+
+
+
+
+
+User Stories
+Customer Stories
+ID
+As a...
+I want to...
+So that...
+US-1
+Customer
+Browse available banner materials with prices
+I can compare options before ordering
+US-2
+Customer
+See the price per square foot for each material
+I know exactly what I will pay
+US-3
+Customer
+Enter custom width and height for my banner
+I get the exact size I need
+US-4
+Customer
+See the total price calculated automatically
+I don't have to do manual calculations
+US-5
+Customer
+Upload my design file (image or PDF)
+The shop can print my custom design
+US-6
+Customer
+Place an order with just my name and phone number
+I don't need to create an account
+US-7
+Customer
+View the shop's portfolio of past work
+I can judge the quality before ordering
+US-8
+Customer
+See contact information and location
+I can reach the shop if needed
+
+
+Admin Stories
+ID
+As a...
+I want to...
+So that...
+US-9
+Admin
+Add new banner materials with name, price, and description
+Customers can see what's available
+US-10
+Admin
+Edit or deactivate existing materials
+I can update prices or remove discontinued items
+US-11
+Admin
+View all incoming orders sorted by date
+I don't miss any orders
+US-12
+Admin
+Update order status (Pending → Confirmed → In Progress → Done)
+Customers know their order progress
+US-13
+Admin
+Upload images to the portfolio gallery
+Potential customers can see our past work
+US-14
+Admin
+Update company profile (phone, address, hours)
+Public pages show correct information
+US-15
+Admin
+Access the admin panel with a secret password
+Only authorized people can manage the shop
+
+Acceptance Criteria
+US-1: Browse Materials
+    • Given the customer opens the Services page
+    • When the page loads
+    • Then all active materials are displayed with name, description, price per sqft, and an image
+    • And inactive materials are not shown
+US-3: Custom Dimensions
+    • Given the customer is on the order form
+    • When they enter width = 4 ft, height = 3 ft, material = Vinyl ($15/sqft), quantity = 2
+    • Then the total price shown is 4 × 3 × 15 × 2 = $360
+
+
+
+US-6: Place Order Without Account
+    • Given the customer has filled in name, phone, material, and dimensions
+    • When they submit the order
+    • Then the order is saved with status = PENDING
+    • And the customer sees a confirmation message with their order number
+US-9: Add Material (Admin)
+    • Given the admin is on the materials management page
+    • When they enter name = "Star Flex", price = 12, description = "Economy outdoor material"
+    • Then the material is saved and appears on the customer-facing Services page
+US-11: View Orders (Admin)
+    • Given the admin opens the Orders page
+    • When the page loads
+    • Then all orders are listed with customer name, material, size, quantity, total price, status, and date
+    • And orders are sorted newest-first
+US-15: Admin Authentication
+    • Given a user navigates to /admin
+    • When they do not have a valid admin token cookie
+    • Then they are redirected to /admin/login
+    • When they enter the correct admin secret
+    • Then a cookie is set and they can access all admin pages
+
+
+
+Component diagram:
+
+                                  Figure: System Architecture & Component Flow
+
+
+
+Database Diagram:
+
+
+                                     Figure: Entity Relationship Diagram (Database Schema)
+Description: The diagram represents the relational database schema, highlighting the entities and their logical connections to support order management and content administration.
+    • Order Management: The Order table stores customer and pricing info, while OrderStatusHistory tracks status changes.
+    • Product Details: The Material table is linked to orders to provide specific pricing and product data.
+    • Admin Control: The Admin table manages user access and tracks who uploads items to the Gallery.
+    • Company Info: A dedicated CompanyProfile table stores business contact details and social links.
+    • Data Integrity: Uses primary and foreign keys to keep all related information accurate and connected.
+
+Relationships
+Relationship
+Type
+Description
+Material → Order
+1 : M
+One material can be used in many orders
+Order → Material
+M : 1
+Each order references exactly one material
+Order → OrderStatusHistory
+1 : M
+One order has multiple status change records
+Admin → OrderStatusHistory
+1 : M
+One admin can change status of many orders
+Admin → GalleryItem
+1 : M
+One admin can upload many gallery items
+GalleryItem → Admin
+M : 1
+Each gallery item was uploaded by one admin
+CompanyProfile
+—
+Single-row table for store-wide settings
+
+Sequence diagram:
+
+
+                               Figure: Place Order Sequence Diagram
+
+Description: This diagram illustrates the step-by-step process and interactions required to successfully place an order within the system.
+    • User Interaction: The process begins when the user fills out the order form and submits it through the UI.
+    • API Request: A POST request is sent to the order API, triggering the backend workflow.
+    • Validation & Calculation: The server validates the input data and calculates the total price based on the selected material and dimensions.
+    • Database Operation: Using the Prisma ORM, the system creates a new record in the database and generates a unique order number.
+    • Confirmation: Once the data is saved, the system returns the order number to the user and displays an "Order Placed" confirmation message.
+
+
+Admin:
+        
+                                              Figure: Admin Login Sequence Diagram
+
+Description: This diagram shows the sequence of events during the administrator authentication process to ensure secure access to the dashboard.
+    • Credential Entry: The Admin enters their email and password into the login form.
+    • Backend Request: The frontend sends a POST request containing the credentials to the authentication API.
+    • Verification: The server validates the credentials against the Admin table in the database using Prisma.
+    • Session Management: Upon successful validation, the server generates a secure cookie to maintain the session.
+    • Authorization: The middleware verifies the cookie and redirects the authorized user to the Admin Dashboard.
+
+
+
+
+Class Design:
+
+
+                                                                 Figure : Class Diagram
+
+
+                                                            Figure : Use case Diagram
+Design Pattern Descriptions and Their Purposes
+In this project, we have successfully implemented two crucial design patterns to ensure our codebase is efficient, scalable, and maintainable.
+1. Singleton Design Pattern
+    • Purpose: To manage the database connection efficiently and prevent resource exhaustion.
+    • Implementation and Usage: We implemented the Singleton pattern for our Database Client. The Database Client class is designed with a private constructor, which strictly prevents any external module from instantiating it directly using the new keyword. Instead, we use a static method called getInstance(). When getInstance() is called, it checks if an instance of the database client already exists. If it does, it returns that exact same instance; if not, it creates it first. Because of this approach, no matter how many files or modules import this database module, they all share the exact same database connection.
+    • Benefit: This approach significantly saves system resources and prevents the database from running out of available connections by avoiding redundant connection creations.
+
+2. Strategy Design Pattern
+    • Purpose: To handle dynamic pricing calculations based on different customer needs and order conditions.
+    • Implementation and Usage: We utilized the Strategy pattern specifically in our pricing section. We defined a PricingStrategy interface containing a calculate method. Based on this interface, we implemented three distinct concrete strategies:
+        1. Standard Pricing: Performs a standard calculation by multiplying the single area by the quantity.
+        2. Bulk Discount Pricing: Applies a 10% discount on the total price when the order quantity is 5 or more.
+        3. Rush Order Pricing: Adds a 25% surcharge to the total price for urgent orders.
+    • Our PriceCalculator class acts as the Context. It accepts the chosen strategy and delegates the calculation task to it. The strategy can be seamlessly changed at runtime using a setStrategy method.
+    • Benefit: This implementation perfectly follows the Open/Closed Principle. It allows us to introduce new pricing rules in the future without modifying the existing, tested code.
+
+UI / GUI Design
+Color Palette
+Name
+Hex
+Usage
+Primary
+#22C55E
+Green: buttons, highlights, links
+Secondary
+#1E293B
+Dark slate: backgrounds, cards
+Accent
+#3B4B63
+Blue-grey: icon backgrounds
+Base
+#0F172A
+Very dark: page background
+Text Primary
+#FFFFFF
+White: headings, body text
+Text Muted
+#9CA3AF
+Grey: descriptions, captions
+
+Typography
+    • Font: System default (Tailwind's font-sans)
+    • Headings: Bold, white (text-white font-bold)
+    • Body: Regular weight, gray-300 to gray-400
+    • Scale: Responsive — text-5xl md:text-6xl lg:text-7xl for hero, scales down for smaller headings
+Responsive Design
+    • Mobile: Single column layout, hamburger menu (Header component uses useState toggle)
+    • Tablet (md): 2-column grids for cards
+    • Desktop (lg): 3-4 column layouts, full navigation bar
+    • Breakpoints: Tailwind defaults — md: 768px, lg: 1024px
+Navigation
+Link
+Route
+Description
+Home
+/
+Landing page with hero
+Services
+/services
+Banner materials catalog
+Portfolio
+/gallery
+Past work showcase
+About
+/about
+Company information
+Contact
+/contact
+Location, phone, email
+Get Started
+/services
+CTA button → same as Services
+Admin
+/admin
+Protected dashboard (not in nav)
+
+
+
+
+Initial Unit Testing:
+
+

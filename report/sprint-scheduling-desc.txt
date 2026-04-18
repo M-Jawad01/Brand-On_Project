@@ -1,0 +1,100 @@
+Comprehensive Project Lifecycle Report: BrandON Platform
+Project Overview: BrandON is an enterprise-grade Digital Advertising Agency platform designed to facilitate custom banner printing, signboard orders, and portfolio management. Built using a modern Next.js 14 stack with TypeScript, Tailwind CSS, Prisma ORM, and PostgreSQL within a Dockerized environment, the platform features a strict Role-Based Access Control (RBAC) system for Admins, Agents, and Customers.
+
+Team Development Strategy & Execution Dynamics
+A core challenge of this project was the steep technical learning curve associated with the Next.js App Router, advanced ORM management, and containerized deployment. To ensure project success without compromising the timeline, the team adopted a strategic, phased development approach.
+
+During the foundational sprints (Sprints 1–4), Mahir (Full-Stack Lead) took primary ownership of the core architecture. This involved building the secure infrastructure, defining the database schema, setting up Docker, and implementing the complex NextAuth RBAC middleware. Concurrently, Jawad, Raima, Saina, and Sumaya engaged in a rigorous upskilling phase. Rather than generating formal QA documentation early on, their initial involvement consisted of collaborative, in-person testing sessions and codebase exploration. By pulling the repository locally, running the environment, and navigating the early builds together, the team familiarized themselves with React component lifecycles, Tailwind utility classes, and the Next.js directory structures.
+
+Once the team emerged from this hands-on learning phase with a solid understanding of the technology stack, Mahir decentralized the workflow. From Sprint 5 onwards, the team transitioned to independent feature execution. Detailed sprint plans were distributed, and members took full ownership of their respective domains—backend APIs, admin dashboards, customer order flows, and responsive UI polish—resulting in a highly collaborative and efficient development pipeline.
+
+Sprint-by-Sprint Scheduling and Milestones
+Phase I: Discovery, Architecture, & Foundation (Sprints 1–3)
+The initial phase was dedicated to understanding the client's business logic and laying an unshakable technical foundation.
+
+Sprint 1: Client Discovery & Requirement Gathering
+
+Conducted initial meetings with the BrandON agency owner to map out the business logic (custom sizes, LED signboards, etc.).
+
+Finalized the Product Requirement Document (PRD) and secured the official Brand Style Guide (color palettes and typography).
+
+Sprint 2: Environment Setup & Infrastructure
+
+Containerized the PostgreSQL database using Docker Compose to ensure environment consistency.
+
+Scaffolded the Next.js 14 architecture with strict ESLint/Prettier rules and configured Tailwind CSS with the client's specific hex codes.
+
+Team Focus: Conducted initial codebase reviews. The team set up their local environments to ensure everyone could successfully run the Next.js and Docker containers.
+
+Sprint 3: Core Architecture & Database Initialization
+
+Drafted the initial Prisma schema outlining the User, Listing, and Role entities.
+
+Implemented the Prisma Client Singleton pattern to optimize database connections during development.
+
+Team Focus: Sumaya and Saina mapped out TypeScript interfaces, while Raima and Jawad studied the Prisma schema relationships to understand how data would flow through the app.
+
+Phase II: Security, Implementation, & Team Transition (Sprints 4–5)
+This phase marked the completion of the core infrastructure and the transition from codebase familiarization to active team code contributions.
+
+Sprint 4: Authentication & RBAC System
+
+Integrated NextAuth.js (v5) with bcrypt password hashing and JWT session management.
+
+Built the middleware.ts gatekeeper to physically isolate routing for (admin), (agent), and (customer) access.
+
+Generated extensive mock data for initial UI rendering.
+
+Team Focus: Conducted informal, in-person testing sessions of the newly built RBAC system. This hands-on interaction with the local environment allowed the team to get comfortable navigating the NextAuth integration and understanding the protected routes before writing their own features.
+
+Sprint 5: Codebase Expansion & Client Feedback
+
+Pushed the structural shells for all customer-facing public pages.
+
+Conducted a recorded demonstration with the client to showcase the initial UI structures and finalize post-live maintenance requirements.
+
+Transition: Jawad made his first backend code commits, while Raima began bridging the gap between structural code and production-grade CSS, marking the official shift to distributed development.
+
+Phase III: Independent Feature Execution (Sprints 6–7)
+With the team fully ramped up, development velocity increased as members took ownership of distinct functional modules.
+
+Sprint 6: Core Backend APIs & Data Binding
+
+Jawad built the backbone API routes (GET/POST for materials, orders, and gallery items).
+
+Saina executed database migrations and seeded the testing environment.
+
+Raima connected the public Home, Services, and Gallery pages to live database queries.
+
+Sumaya developed reusable UI components (e.g., Material Cards) and the Admin login interface.
+
+Sprint 7: The Customer Order Flow & Admin Panel
+
+Raima architected the complex, 4-step interactive customer order page (Material Selection → Size/Price Calculation → Design Upload → Checkout).
+
+Saina built the comprehensive Admin CRUD tables for managing materials and processing orders.
+
+Sumaya constructed the Admin Dashboard analytics and Gallery management views.
+
+Jawad implemented human-readable order number generation (e.g., BON-20260315-001) and reusable server security helpers.
+
+Phase IV: QA, Polish, & Deployment (Sprints 8–10)
+The final phase focuses on system hardening, responsive design perfection, and project handover.
+
+Sprint 8: Validation & Error Handling
+
+Enforced strict client-side and server-side form validations across all inputs to prevent bad data.
+
+Hardened the file upload system to reject oversized or malicious files.
+
+Added loading states, error boundaries, and "toast" notifications for seamless user feedback.
+
+Sprint 9: Responsive Polish & End-to-End Testing
+
+Sumaya led a comprehensive UI sweep, ensuring flawless mobile and tablet responsiveness across the entire application.
+
+Jawad & Sonia finalized the Company Profile settings and integrated the final gallery deletion routes.
+
+Mahir conducted full system regression testing (browse → order → admin update) to eliminate final bugs.
+
+Finalized all project documentation and setup guides for faculty review.

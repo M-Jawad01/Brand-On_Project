@@ -1,0 +1,978 @@
+\documentclass[12pt, a4paper]{article}
+
+%% ─── Packages ────────────────────────────────────────────────────────────────
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=1in, headheight=15pt]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{tabularx}
+\usepackage{array}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{float}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{setspace}
+
+%% ─── Hyperlink setup ─────────────────────────────────────────────────────────
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  urlcolor=blue,
+  citecolor=black
+}
+
+%% ─── Code listing style ──────────────────────────────────────────────────────
+\definecolor{codegray}{rgb}{0.95,0.95,0.95}
+\definecolor{codeblue}{rgb}{0.0,0.3,0.6}
+\lstset{
+  backgroundcolor=\color{codegray},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{codeblue}\bfseries,
+  commentstyle=\color{gray},
+  stringstyle=\color{teal},
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  captionpos=b
+}
+
+%% ─── Header / footer ─────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{BrandON Platform,ftware Engineering Report}
+\lhead{CSE412 | Group-13}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+%% ─── Section formatting ──────────────────────────────────────────────────────
+\titleformat{\section}{\large\bfseries}{}{0em}{\thesection\quad}
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{\thesubsection\quad}
+
+%% ─── Title ───────────────────────────────────────────────────────────────────
+\title{
+  \vspace{1cm}
+  \textbf{\Large EAST WEST UNIVERSITY}\\[0.3cm]
+  \large Department of Computer Science and Engineering (CSE)\\
+  \large Semester: Spring 2026, B.Sc.\ in CSE\\[1cm]
+  \rule{\linewidth}{0.5pt}\\[0.4cm]
+  \textbf{\LARGE BrandON: A Web-Based Banner Order Management Platform}\\[0.2cm]
+  \large Software Engineering Project Report\\
+  \large CSE412
+  \rule{\linewidth}{0.5pt}\\[1cm]
+  \normalsize
+  \textbf{Submitted to:}\\
+  Dr.\ Mohammad Mahdi Hassan\\
+  Associate Professor\\
+  Department of Computer Science \& Engineering\\[1cm]
+  \textbf{Submitted by: Group-13 (Team Trelet)}\\[0.3cm]
+  \begin{tabular}{ll}
+    Mahir Faysal Haque Dipto & 2022-2-60-044 \\
+    Sonia Binte Siraj        & 2022-2-60-087 \\
+    Sumaya Binte Naser       & 2022-2-60-155 \\
+    Raima Husna              & 2022-2-60-052 \\
+    Mubashir Jawad           & 2022-2-60-039 \\
+  \end{tabular}\\[1cm]
+  \large April 2026
+}
+\date{}
+
+%% ─── Document ────────────────────────────────────────────────────────────────
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+\newpage
+
+%% ─── Table of Contents ───────────────────────────────────────────────────────
+\tableofcontents
+\newpage
+
+%% ═══════════════════════════════════════════════════════════════════════════
+\section{Introduction}
+%% ═══════════════════════════════════════════════════════════════════════════
+
+\subsection{Problem Statement}
+
+Local banner printing shops operate entirely offline. A customer who needs a banner must visit the shop in person, wait while pricing is looked up, negotiate manually, and return at a later date to collect the order. There is no online order tracking, no transparent pricing, and no formal record of transactions. This creates inconvenience for customers and restricts the shop's ability to reach a wider audience.
+
+\subsection{Proposed Solution}
+
+BrandON is a web-based platform that digitalises the banner ordering workflow. Customers can browse available materials with transparent per-square-foot pricing, configure custom dimensions, upload their design file, and place an order without visiting the shop or creating an account.
+
+The administration side provides a password-protected dashboard where the shop owner can manage materials, process orders through a defined status pipeline (Pending $\to$ Confirmed $\to$ In Progress $\to$ Completed), upload portfolio work to the gallery, and keep company information up to date.
+
+\begin{itemize}[noitemsep]
+  \item Browsing active banner materials with price-per-square-foot
+  \item Custom dimension input (width $\times$ height in feet) with automatic total price calculation
+  \item Design file upload (image/PDF) per order
+  \item Order placement without requiring customer account registration
+  \item Admin dashboard for full CRUD management of materials, orders, and gallery
+  \item Order status pipeline enforcement with history tracking
+  \item Portfolio gallery management for past work
+\end{itemize}
+
+\subsection{Project Scope}
+
+The platform is designed for a single banner printing shop. Multi-store support is outside the project scope. Payment processing is not included, as the shop operates on a Cash on Delivery model. Customer registration is not required; orders are placed using only a name and phone number.
+
+\subsection{Technology Choices}
+
+\begin{table}[H]
+\centering
+\caption{Technology Stack}
+\begin{tabularx}{\textwidth}{lXX}
+\toprule
+\textbf{Layer} & \textbf{Technology} & \textbf{Reason} \\
+\midrule
+Frontend   & Next.js 14 (React)    & Server-side rendering, App Router, file-based routing \\
+Language   & TypeScript            & Type safety catches errors before runtime \\
+Styling    & Tailwind CSS          & Utility-first; no separate stylesheet files \\
+ORM        & Prisma 5              & Type-safe queries, schema-as-code, migration tracking \\
+Database   & PostgreSQL 15         & Reliable relational DB, runs in Docker \\
+Testing    & Jest 30 + ts-jest     & Industry-standard; supports TypeScript natively \\
+Deployment & Docker Compose        & Single command to start the database container \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+%% ═══════════════════════════════════════════════════════════════════════════
+\section{User Stories and Requirements}
+%% ═══════════════════════════════════════════════════════════════════════════
+
+\subsection{Customer Stories}
+
+\begin{longtable}{p{1cm} p{2.5cm} p{4.5cm} p{4cm}}
+\toprule
+\textbf{ID} & \textbf{As a\ldots} & \textbf{I want to\ldots} & \textbf{So that\ldots} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Continued from previous page}}\\
+\toprule
+\textbf{ID} & \textbf{As a\ldots} & \textbf{I want to\ldots} & \textbf{So that\ldots} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+US-1 & Customer & Browse available banner materials with prices & I can compare options before ordering \\
+US-2 & Customer & See the price per square foot for each material & I know exactly what I will pay \\
+US-3 & Customer & Enter custom width and height for my banner & I get the exact size I need \\
+US-4 & Customer & See the total price calculated automatically & I don't have to do mental arithmetic \\
+US-5 & Customer & Upload my design file (image or PDF) & The shop can print my custom design \\
+US-6 & Customer & Place an order with just my name and phone & I don't need to create an account \\
+US-7 & Customer & View the shop's portfolio of past work & I can judge quality before committing \\
+US-8 & Customer & See contact information and location & I can reach the shop directly if needed \\
+\end{longtable}
+
+\subsection{Admin Stories}
+
+\begin{longtable}{p{1cm} p{2.5cm} p{4.5cm} p{4cm}}
+\toprule
+\textbf{ID} & \textbf{As a\ldots} & \textbf{I want to\ldots} & \textbf{So that\ldots} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Continued from previous page}}\\
+\toprule
+\textbf{ID} & \textbf{As a\ldots} & \textbf{I want to\ldots} & \textbf{So that\ldots} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+US-9  & Admin & Add materials with name, price, and description & Customers see what's available \\
+US-10 & Admin & Edit or deactivate existing materials & I can update prices or remove discontinued items \\
+US-11 & Admin & View all incoming orders sorted by date & I don't miss any orders \\
+US-12 & Admin & Update order status through the pipeline & Orders progress forward predictably \\
+US-13 & Admin & Upload images to the portfolio gallery & Potential customers can see past work \\
+US-14 & Admin & Update company profile and contact details & Public pages always show correct information \\
+US-15 & Admin & Access the panel with a secret password & Only authorized staff can manage the shop \\
+\end{longtable}
+
+\subsection{Acceptance Criteria (Selected)}
+
+\textbf{US-3: Custom Dimensions}
+
+\textit{Given} the customer is on the order form and enters width = 4 ft, height = 3 ft, material = Vinyl (\$15/sqft), quantity = 2,
+\textit{then} the total price displayed is $4 \times 3 \times 15 \times 2 = \$360$.
+,
+\textbf{US-6: Place Order Without Account}
+
+\textit{Given} a customer fills in name, phone, material, and dimensions,
+\textit{when} they submit the form,
+\textit{then} an order is saved with \texttt{status = PENDING} and a con,
+\textit{when} they submit the form,
+\textit{then} an order is saved with \texttt{status = PENDING} and a confirmation message display
+
+\textit{Given} a user navigates to \texttt{/admin} with no valid cookie,
+\textit{then} they are redirected to \texttt{/admin/login}. After entering the correct admin password, a session cookie is set and access to the dashboard is granted.
+,
+\textit{then} they are redirected to \texttt{/admin/login}. After entering the correct admin password, a session cookie is set and access to the dashboard
+\section{System Architecture and Design}
+%% ═══════════════════════════════════════════════════════════════════════════
+
+\subsection{System Architecture Overview}
+
+The system is divided into four clear layers: the browser client, the Next.js server (App Router), the library modules, and the database. Figure~\ref{fig:arch} illustrates the full component flow.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.75\textwidth]{diagrams/component-diagram.png}
+  \caption{System Architecture Diagram. The browser communicates with the Next.js server over HTTP. The middleware layer intercepts all \texttt{/admin/*} routes and enforces cookie-based authentication before any server component or API route is reached. The \texttt{lib/} modules (prisma.ts, pricing.ts, validation.ts) are shared utilities consumed by API routes and server components alike. All database operations go through Prisma ORM to PostgreSQL running in a Docker container.}
+  \label{fig:arch}
+\end{figure}
+
+Every incoming HTTP request first passes through the middleware layer. For public routes, the request is forwarded directly to the appropriate server component. For any \texttt{/admin/*} path, the middleware verifies the \texttt{admin\_token} cookie against the \texttt{ADMIN\_SECRET} environment variable. Unauthenticated requests are redirected to the login page. No external authentication provider or JWT library is used; the implementation relies on a single cookie checked in the middleware file.
+
+Every incoming HTTP request first passes through the middleware layer. For public routes, the request is forwarded directly to the appropriate server component. For any \texttt{/admin/*} path, the middleware verifies the \texttt{admin\_token} cookie against the \texttt{ADMIN\_SECRET} environment variable. Unauthenticated requests are redirected to the login page. No external authentication provider or JWT library is used; the implementation relies on a single cookie checked in the middleware fil
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{diagrams/class-diagram.png}
+  \caption{Class and Component Diagram. The diagram shows the five distinct layers of the system: the React Component Layer (Header, Footer, AdminLogin), the API Routes HTTP Layer (POST /api/admin/login), the Validation Layer (ValidationHelpers module with OrderInput and MaterialInput interfaces), the Pricing Layer implementing the Strategy Pattern (PricingStrategy interface, three concrete strategies, and PriceCalculator context), and the Database Layer using the Singleton Pattern (DatabaseClient wrapping PrismaClient). Arrows indicate delegation and composition relationships between layers.}
+  \label{fig:class}
+\end{figure}
+
+\subsection{Database Design}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.90\textwidth]{diagrams/db-diagram.png}
+  \caption{Entity Relationship Diagram. Six tables constitute the schema: \texttt{Material} (products with pricing), \texttt{Order} (customer submissions with foreign key to Material), \texttt{OrderStatusHistory} (audit log of every status change), \texttt{Admin} (shop staff accounts with bcrypt-hashed passwords), \texttt{GalleryItem} (portfolio images uploaded by admins), and \texttt{CompanyProfile} (a single-row settings table for shop contact details and social links). The diagram shows all primary keys, foreign key relationships, and field types.}
+  \label{fig:erd}
+\end{figure}
+
+\subsubsection{Relationships}
+
+\begin{table}[H]
+\centering
+\caption{Database Relationship Summary}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{From} & \textbf{To} & \textbf{Description} \\
+\midrule
+Material & Order & One material can appear in many orders (1:M) \\
+Order & OrderStatusHistory & One order accumulates many status change records (1:M) \\
+Admin & OrderStatusHistory & One admin can change status on many orders (1:M) \\
+Admin & GalleryItem & One admin can upload many gallery images (1:M) \\
+CompanyProfile & N/A & Single-row configuration table; no foreign key relationships \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Sequence Diagrams}
+
+\subsubsection{Place Order Flow}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.80\textwidth]{diagrams/sequence-diagram-place-order.png}
+  \caption{Place Order Sequence Diagram. The sequence begins when the customer fills the order form and submits it. The browser sends a POST request to \texttt{/api/orders}. The API route first calls \texttt{validateOrderInput()}; any validation failure returns a 400 response immediately. For valid input, the server fetches the material price from the database and recalculates the total price on the server side, ignoring any value submitted by the client. Prisma creates the order record, generates a human-readable order number in the format BON-YYYYMMDD-NNN, and the confirmation is returned to the customer.}
+  \label{fig:order-seq}
+\end{figure}
+
+\subsubsection{Admin Login Flow}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.80\textwidth]{diagrams/sequence-diagram-admin.png}
+  \caption{Admin Login Sequence Diagram. When the admin navigates to \texttt{/admin}, the middleware reads the \texttt{admin\_token} cookie. If the cookie is absent, the request is redirected to \texttt{/admin/login}. The admin submits their password via a POST request to \texttt{/api/admin/login}. The server compares the submitted value against the \texttt{ADMIN\_SECRET} environment variable. On success, an httpOnly cookie named \texttt{admin\_token} is set and the admin is redirected to the dashboard. All subsequent requests to \texttt{/admin/*} routes repeat this cookie check through the middleware; the dashboard pages themselves perform no additional authentication logic.}
+  \label{fig:login-seq}
+\end{figure}
+
+\subsection{Use Case Diagram}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\textwidth]{diagrams/use-case-diagram.png}
+  \caption{Use Case Diagram for the BrandON Platform. The diagram is partitioned into three zones: Public Zone (customer-facing actions), Admin Zone (authenticated management actions), and System Automated Actions (middleware-triggered operations). Customer use cases include browsing materials, viewing gallery, placing orders, and contacting the shop. Admin use cases cover the full CRUD lifecycle for materials, orders, and gallery items, plus company profile management. The ``Place Order'' use case includes ``Validate Order Input'' and ``Calculate Price'' as included sub-flows. All Admin Zone use cases include authentication via middleware as a prerequisite, shown with \textless\textless include\textgreater\textgreater\ relationships.}
+  \label{fig:usecase}
+\end{figure}
+
+%% ═══════════════════════════════════════════════════════════════════════════
+\section{Design Patterns}
+%% ═══════════════════════════════════════════════════════════════════════════
+
+Two Gang-of-Four design patterns were applied in this project. Each pattern addresses a specific technical problem that would otherwise lead to errors in a production environment.
+
+\subsection{Singleton Pattern: Database Client}
+
+\textbf{File:} \texttt{lib/prisma.ts}
+
+\subsubsection{The Problem It Solves}
+
+Next.js development mode uses hot-module replacement, which causes the server to partially restart whenever a file is saved. Without the Singleton pattern, each restart would create a new \texttt{PrismaClient} instance. PostgreSQL has a default connection limit of 100. Without this pattern, repeated hot reloads would exhaust the connection pool and cause the application to fail with a ``too many connections'' error during development.
+
+\subsubsection{Implementation}
+
+\begin{lstlisting}[language=Java, caption=Singleton Pattern in lib/prisma.ts (TypeScript)]
+class DatabaseClient {
+  private static instance: PrismaClient | undefined
+  private constructor() {}
+
+  public static getInstance(): PrismaClient {
+    if (!DatabaseClient.instance) {
+      DatabaseClient.instance = new PrismaClient({
+        log: process.env.NODE_ENV === 'development' ? ['query'] : [],
+      })
+    }
+    return DatabaseClient.instance
+  }
+}
+
+// Survive Next.js hot reloads by anchoring to globalThis
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined
+}
+const prisma = globalForPrisma.prisma ?? DatabaseClient.getInstance()
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma
+
+export default prisma
+\end{lstlisting}
+
+\subsubsection{Key Design Elements}
+
+\begin{table}[H]
+\centering
+\caption{Singleton Pattern Elements}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Element} & \textbf{Purpose} \\
+\midrule
+\texttt{private constructor()} & Blocks \texttt{new DatabaseClient()} from any external code \\
+\texttt{private static instance} & Holds the single shared PrismaClient reference \\
+\texttt{getInstance()} & Creates on first call; returns the same instance every subsequent call \\
+\texttt{globalForPrisma} & Preserves the instance across Next.js hot reloads in development \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Strategy Pattern: Pricing Calculator}
+
+\textbf{File:} \texttt{lib/pricing.ts}
+
+\subsubsection{The Problem It Solves}
+
+The BrandON platform supports three pricing modes. Standard orders apply a base area calculation. Bulk orders receive a 10\% discount when the quantity reaches five or more. Rush orders carry a 25\% surcharge. Without the Strategy pattern, all three rules would be placed in a single function with multiple conditional branches, and adding a new pricing rule would require modifying that function and retesting all existing behaviour.
+
+The Strategy pattern isolates each pricing rule in its own class. New rules can be introduced by adding a new class without modifying any existing code.
+
+\begin{lstlisting}[language=Java, caption=Strategy Pattern in lib/pricing.ts (TypeScript)]
+export interface PricingStrategy {
+  name: string
+  calculate(params: PricingParams): number
+}
+
+// Standard: base area x quantity
+export class StandardPricing implements PricingStrategy {
+  name = 'Standard'
+  calculate({ pricePerSqFt, widthFt, heightFt, quantity }: PricingParams) {
+    return Math.round(pricePerSqFt * widthFt * heightFt * quantity * 100) / 100
+  }
+}
+
+// Bulk: 10% off for 5+ units
+export class BulkDiscountPricing implements PricingStrategy {
+  name = 'Bulk Discount (10% off for 5+)'
+  calculate({ pricePerSqFt, widthFt, heightFt, quantity }: PricingParams) {
+    const base = pricePerSqFt * widthFt * heightFt * quantity
+    const discount = quantity >= 5 ? 0.10 : 0
+    return Math.round(base * (1 - discount) * 100) / 100
+  }
+}
+
+// Rush: +25% surcharge
+export class RushOrderPricing implements PricingStrategy {
+  name = 'Rush Order (+25%)'
+  calculate({ pricePerSqFt, widthFt, heightFt, quantity }: PricingParams) {
+    return Math.round(pricePerSqFt * widthFt * heightFt * quantity * 1.25 * 100) / 100
+  }
+}
+
+// Context: delegates to whichever strategy is active
+export class PriceCalculator {
+  private strategy: PricingStrategy
+  constructor(strategy: PricingStrategy = new StandardPricing()) {
+    this.strategy = strategy
+  }
+  setStrategy(strategy: PricingStrategy): void { this.strategy = strategy }
+  calculate(params: PricingParams): number { return this.strategy.calculate(params) }
+}
+\end{lstlisting}
+
+\subsubsection{Key Design Elements}
+
+\begin{table}[H]
+\centering
+\caption{Strategy Pattern Elements}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Element} & \textbf{Purpose} \\
+\midrule
+\texttt{PricingStrategy} interface & Defines the \texttt{calculate()} contract all strategies must fulfil \\
+\texttt{StandardPricing} & Base calculation: price $\times$ area $\times$ quantity \\
+\texttt{BulkDiscountPricing} & 10\% discount when quantity $\geq 5$ \\
+\texttt{RushOrderPricing} & 25\% surcharge added to base price \\
+\texttt{PriceCalculator} & Context class; holds a strategy and delegates calculation \\
+\texttt{setStrategy()} & Allows runtime switching without reconstructing the calculator \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+This follows the Open/Closed Principle: the existing strategies are closed for modification, and the system is open for extension by adding new strategy classes.
+
+%% ═══════════════════════════════════════════════════════════════════════════
+\section{UI and GUI Design}
+%% ═══════════════════════════════════════════════════════════════════════════
+
+\subsection{Color Palette}
+
+\begin{table}[H]
+\centering
+\caption{Brand Color Palette}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Name} & \textbf{Hex} & \textbf{Usage} \\
+\midrule
+Primary   & \texttt{\#22C55E} & Green: CTA buttons, highlights, active links \\
+Secondary & \texttt{\#1E293B} & Dark slate: card backgrounds, nav bar \\
+Accent    & \texttt{\#3B4B63} & Blue-grey: icon backgrounds, borders \\
+Base      & \texttt{\#0F172A} & Very dark navy: page background \\
+Text Primary & \texttt{\#FFFFFF} & White: all headings and body text \\
+Text Muted   & \texttt{\#9CA3AF} & Grey: descriptions and captions \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Typography}
+
+The project uses Tailwind's default \texttt{font-sans} system font stack. Headings are bold and white; body text is displayed in gray-300 to gray-400. The hero section uses responsive text scaling (\texttt{text-5xl} on mobile, \texttt{text-6xl} on medium screens, \texttt{text-7xl} on large screens), managed through Tailwind breakpoint utility classes without any custom CSS.
+
+\begin{itemize}[noitemsep]
+  \item \textbf{Mobile:} Single-column layout. The Header component uses a \texttt{useState} boolean to toggle the hamburger menu.
+  \item \textbf{Tablet (md: 768px):} Two-column card grids for material listings and gallery.
+  \item \textbf{Desktop (lg: 1024px):} Three to four column layouts, full horizontal navigation.
+\end{itemize}
+
+\subsection{Navigation Structure}
+
+\begin{table}[H]
+\centering
+\caption{Public Navigation Routes}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Label} & \textbf{Route} & \textbf{Description} \\
+\midrule
+Home       & \texttt{/}         & Landing page with hero and feature overview \\
+Services   & \texttt{/services} & Banner materials catalogue with pricing \\
+Portfolio  & \texttt{/gallery}  & Past work showcase \\
+About      & \texttt{/about}    & Company information \\
+Contact    & \texttt{/contact}  & Location, phone, email \\
+Admin      & \texttt{/admin}    & Protected dashboard (not in public nav) \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+%% ═══════════════════════════════════════════════════════════════════════════
+\section{Sprint Scheduling and Project Management}
+%% ═══════════════════════════════════════════════════════════════════════════
+
+\subsection{Team Development Strategy}
+
+The project followed a two-phase development approach. During the first four sprints, Mahir led the core technical work, including system architecture, database schema design, Docker configuration, and admin middleware. During this same period, the remaining team members focused on setting up their local development environments, running the application, and familiarising themselves with React component structure, Prisma queries, and the Next.js directory layout through hands-on exploration.
+
+This preparation phase allowed the team to contribute effectively from Sprint 5 onwards. From that point, work was distributed by functional area: Jawad was responsible for the backend API layer, Sonia and Saina managed the admin CRUD interfaces and database migrations, Raima developed the customer-facing order flow, and Sumaya handled layout, responsive design, and UI polish
+
+\begin{table}[H]
+\centering
+\caption{Sprint Summary Table}
+\begin{tabularx}{\textwidth}{p{1.5cm}p{3.5cm}X}
+\toprule
+\textbf{Sprint} & \textbf{Phase} & \textbf{Key Deliverables} \\
+\midrule
+1 & Discovery & Client meetings, PRD finalization, brand style guide acquisition \\
+2 & Infrastructure & Docker Compose setup, Next.js scaffold, Tailwind + ESLint configuration \\
+3 & Architecture & Prisma schema (Material, Order, Admin, GalleryItem, CompanyProfile), Singleton pattern \\
+4 & Security & Admin cookie-based middleware, mock data for UI, RBAC route isolation \\
+5 & Transition & Public page shells, client demo, first distributed commits from team \\
+6 & Core Backend & All API routes (materials, orders, gallery), design patterns, 33 unit tests \\
+7 & Order Flow & Customer order page (4-step), admin CRUD tables, order number generation \\
+8 & Hardening & Server/client validation, file upload guards, loading and error states \\
+9 & Polish \& QA & Responsive pass, regression testing, documentation, final demo preparation \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Sprint 6 Detailed Tasks}
+
+\begin{longtable}{p{0.5cm}p{6.5cm}p{2cm}p{1.5cm}}
+\toprule
+\textbf{\#} & \textbf{Task} & \textbf{Assigned} & \textbf{Status} \\
+\midrule
+\endfirsthead
+\multicolumn{4}{c}{\textit{Continued}}\\
+\toprule
+\textbf{\#} & \textbf{Task} & \textbf{Assigned} & \textbf{Status} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+1  & Next.js 14, TypeScript, Tailwind, Prisma project setup & Mahir & Done \\
+2  & Docker Compose for PostgreSQL                           & Mahir & Done \\
+3  & Prisma schema: all 5 models                             & Jawad & Done \\
+4  & Admin middleware cookie-based auth                      & Mahir & Done \\
+5  & Admin dashboard page                                    & Raima & Done \\
+6  & Public layout: Header and Footer components               & Sumaya & Done \\
+7  & Home page: hero, how-it-works, why-choose sections         & Sumaya & Done \\
+8  & Services page with material cards                         & Raima & Done \\
+9  & Gallery page with admin management                        & Saina & Done \\
+10 & About \& Contact pages                                  & Sumaya & Done \\
+11 & Singleton pattern: prisma.ts                              & Mahir & Done \\
+12 & Strategy pattern: pricing.ts                              & Mahir & Done \\
+13 & Input validation helpers: validation.ts                   & Jawad & Done \\
+14 & Unit tests: pricing and validation (33 tests)              & Mahir & Done \\
+15 & Jest + ts-jest multi-project configuration                & Mahir & Done \\
+\end{longtable}
+
+\subsection{Team Contribution Summary}
+
+\begin{table}[H]
+\centering
+\caption{Member Roles and Verified Contributions}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Member} & \textbf{Role} & \textbf{Primary Contributions} \\
+\midrule
+Mahir   & Full-Stack Lead & Architecture, auth middleware, design patterns, testing infrastructure, final integration and QA \\
+Jawad   & Backend         & All API routes (materials, orders, gallery, upload, contact), Prisma queries, order number generation \\
+Raima   & Frontend/React  & Customer order page (4-step flow), services page, client-side validation and feedback UX \\
+Sonia/Saina & Frontend/DB & Admin CRUD UIs for materials and orders, database migrations, seed scripts, gallery management \\
+Sumaya  & UI/Responsive   & Header, Footer, Home page, About, Contact pages, layout polish, responsive design pass \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+%% ═══════════════════════════════════════════════════════════════════════════
+\section{Software Estimation}
+%% ═══════════════════════════════════════════════════════════════════════════
+
+\subsection{KLOC Estimation}
+
+Lines of code were counted across all project source files (\texttt{.ts} and \texttt{.tsx}) excluding configuration files, generated Prisma client code, and test files.
+
+\begin{table}[H]
+\centering
+\caption{KLOC Breakdown by Module}
+\begin{tabularx}{\textwidth}{lXr}
+\toprule
+\textbf{Module} & \textbf{Description} & \textbf{Estimated LOC} \\
+\midrule
+\texttt{app/(public)/}  & Public pages (Home, Services, Gallery, About, Contact, Order) & 820 \\
+\texttt{app/(admin)/}   & Admin pages (Dashboard, Materials, Orders, Gallery, Messages) & 730 \\
+\texttt{app/api/}       & All API route handlers (8 endpoints) & 650 \\
+\texttt{lib/}           & pricing.ts, validation.ts, prisma.ts, mockServices.ts & 280 \\
+\texttt{components/}    & Header, Footer, LoadingSpinner, MaterialCard, OrderFormModal & 420 \\
+\texttt{middleware.ts}  & Admin route protection logic & 40 \\
+\texttt{prisma/schema}  & Database schema definition & 80 \\
+\midrule
+\textbf{Total} & & \textbf{$\approx$ 3,020} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Total estimated source size: \textbf{3.02 KLOC} (approximately 3,000 non-blank, non-comment lines of TypeScript/TSX).
+
+\subsection{Function Point Analysis}
+
+Function Points were estimated using the IFPUG method. Five component types are counted: External Inputs (EI), External Outputs (EO), External Inquiries (EQ), Internal Logical Files (ILF), and External Interface Files (EIF).
+
+\begin{table}[H]
+\centering
+\caption{Function Point Count}
+\begin{tabularx}{\textwidth}{lXrr}
+\toprule
+\textbf{Type} & \textbf{Component} & \textbf{Complexity} & \textbf{Count} \\
+\midrule
+EI & Place order form submission            & Average (4) & 1 \\
+EI & Admin login                            & Low (3)     & 1 \\
+EI & Add/Edit material (admin)              & Average (4) & 2 \\
+EI & Update order status                    & Low (3)     & 1 \\
+EI & Upload gallery image                   & High (6)    & 1 \\
+EI & Submit contact form                    & Low (3)     & 1 \\
+EO & Order confirmation with number         & Average (5) & 1 \\
+EO & Price calculation display              & Low (4)     & 1 \\
+EQ & List materials (public)                & Low (3)     & 1 \\
+EQ & List orders (admin)                    & Average (4) & 1 \\
+EQ & List gallery items (public)            & Low (3)     & 1 \\
+EQ & Get single order detail                & Low (3)     & 1 \\
+ILF & Material, Order, GalleryItem, Admin, OrderStatusHistory, CompanyProfile & Average (10) & 6 \\
+\midrule
+\multicolumn{3}{l}{\textbf{Unadjusted FP (UFP)}} & \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\[
+  \text{UFP} = (3+3+4+4+3+3+4) \cdot \text{EI weights} + (5+4) \cdot \text{EO weights} + (3+4+3+3) \cdot \text{EQ weights} + 6 \times 10
+\]
+
+\[
+  \text{UFP} = 24 + 9 + 13 + 60 = \textbf{106 Function Points}
+\]
+
+Applying a Value Adjustment Factor (VAF) of 1.0 (moderate system complexity, no distributed processing, no performance constraints beyond basic web app norms):
+
+\[
+  \text{AFP} = \text{UFP} \times \text{VAF} = 106 \times 1.0 = \textbf{106 AFP}
+\]
+
+\subsection{Effort Estimation (COCOMO Basic)}
+
+Using the Basic COCOMO model for an \textit{organic}-type project (small team, familiar environment, well-understood requirements):
+
+\[
+  E = a \cdot (\text{KLOC})^b
+\]
+
+For organic mode: $a = 2.4$, $b = 1.05$
+
+\[
+  E = 2.4 \times (3.02)^{1.05} \approx 2.4 \times 3.22 \approx \textbf{7.73 \text{ person-months}}
+\]
+
+\subsection{Duration Estimation}
+
+\[
+  D = c \cdot E^d
+\]
+
+For organic mode: $c = 2.5$, $d = 0.38$
+
+\[
+  D = 2.5 \times (7.73)^{0.38} \approx 2.5 \times 2.25 \approx \textbf{5.6 \text{ months}}
+\]
+
+\subsection{Team Size}
+
+\[
+  N = \frac{E}{D} = \frac{7.73}{5.6} \approx \textbf{1.4 \text{ people}}
+\]
+
+The COCOMO model suggests approximately 1 to 2 developers for a project of this size. This is broadly consistent with the actual team structure, where one primary lead managed the bulk of the core development work and four contributors supported specific functional areas across a 9-sprint cycle.
+
+\begin{table}[H]
+\centering
+\caption{Estimation Summary}
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Metric} & \textbf{Value} \\
+\midrule
+Total KLOC        & 3.02 KLOC \\
+Function Points   & 106 AFP \\
+Effort (COCOMO)   & 7.73 person-months \\
+Duration (COCOMO) & 5.6 months \\
+Recommended Team  & 1--2 developers \\
+Actual Team       & 5 members over 9 sprints \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+%% ═══════════════════════════════════════════════════════════════════════════
+\section{Software Testing}
+%% ═══════════════════════════════════════════════════════════════════════════
+
+\subsection{Testing Strategy}
+
+The test suite is organised as a Jest multi-project configuration, where each test level runs in its own isolated project with separate setup, teardown, and timeout settings. Unit tests have no external dependencies and complete in under one second without requiring Docker. Integration, system, and regression tests require a running Next.js development server and a live PostgreSQL database.
+
+The four-level structure provides progressively broader coverage. Unit tests validate isolated business logic. Integration tests confirm HTTP API contracts. System tests verify end-to-end user journeys. Regression tests guard against the reintroduction of previously fixed bugs.
+
+\begin{table}[H]
+\centering
+\caption{Test Results Summary}
+\begin{tabularx}{\textwidth}{lrrrrrr}
+\toprule
+\textbf{Level} & \textbf{Suites} & \textbf{Tests} & \textbf{Passed} & \textbf{Failed} & \textbf{Pass Rate} \\
+\midrule
+Unit        & 2 & 33  & 33  & 0 & 100\% \\
+Integration & 4 & 53  & 53  & 0 & 100\% \\
+System      & 1 & 24  & 24  & 0 & 100\% \\
+Regression  & 1 & 17  & 17  & 0 & 100\% \\
+\midrule
+\textbf{Total} & \textbf{8} & \textbf{133} & \textbf{133} & \textbf{0} & \textbf{100\%} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+Execution time: \textbf{2.381 seconds} for all 133 tests in parallel.
+
+\subsection{Test Architecture}
+
+\begin{lstlisting}[caption=Jest Multi-Project Directory Structure]
+jest.config.js  (multi-project runner)
+__tests__/
+  pricing.test.ts          (16 unit tests)
+  validation.test.ts       (17 unit tests)
+  integration/
+    materials-api.test.ts  (15 tests)
+    orders-api.test.ts     (21 tests)
+    gallery-api.test.ts    (9 tests)
+    contact-auth-api.test.ts (8 tests)
+  system/
+    e2e-flows.test.ts      (24 tests)
+  regression/
+    regression.test.ts     (17 tests)
+\end{lstlisting}
+
+\subsection{Unit Testing}
+
+Unit tests validate the two core business logic modules in complete isolation, with no HTTP server, no database connection, and no external dependencies.
+
+\subsubsection{Validation Module (17 tests)}
+
+Tests cover \texttt{validateOrderInput()} and \texttt{validateMaterialInput()} from \texttt{lib/validation.ts}. Key cases:
+
+\begin{itemize}[noitemsep]
+  \item Accepts complete valid inputs
+  \item Rejects missing required fields (name, phone, material, dimensions)
+  \item Rejects zero or negative numeric values (width, height, quantity, price)
+  \item Validates email format while treating email as optional
+  \item Collects multiple validation errors simultaneously (not just the first one)
+  \item Trims whitespace-only strings and rejects them as blank
+\end{itemize}
+
+\subsubsection{Pricing Strategy Module (16 tests)}
+
+Tests cover all three concrete strategies and the \texttt{PriceCalculator} context:
+
+\begin{table}[H]
+\centering
+\caption{Pricing Unit Test Cases}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Strategy} & \textbf{Tests} & \textbf{Key Assertions} \\
+\midrule
+StandardPricing      & 6 & Correct formula ($p \times w \times h \times q$), decimal handling, zero inputs, large orders \\
+BulkDiscountPricing  & 4 & No discount below qty 5; exactly 10\% off at qty 5 and above \\
+RushOrderPricing     & 2 & Exactly 25\% surcharge applied at any quantity \\
+PriceCalculator      & 4 & Default strategy, explicit strategy construction, runtime \texttt{setStrategy()} switching \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Integration Testing}
+
+Integration tests hit live API endpoints against a running server and real PostgreSQL database. All 53 pass.
+
+\subsubsection{Materials API (15 tests)}
+
+Covers the full CRUD lifecycle: create with valid/invalid data, retrieve active/all/by-ID, update name and price, soft-delete (sets \texttt{isActive=false} rather than removing the record), and verification that soft-deleted materials are excluded from public listings but visible to admin with \texttt{?all=true}.
+
+\subsubsection{Orders API (21 tests)}
+
+The order flow is the most critical path. Tests verify:
+
+\begin{itemize}[noitemsep]
+  \item Server-side price recalculation (client-provided total is ignored)
+  \item All required field validations return 400
+  \item Foreign key validation: a nonexistent materialId returns 404
+  \item Status pipeline enforcement: PENDING $\to$ CONFIRMED $\to$ IN\_PROGRESS $\to$ COMPLETED
+  \item Rejection of skipped transitions (PENDING $\to$ IN\_PROGRESS)
+  \item Rejection of backward transitions (CONFIRMED $\to$ PENDING)
+  \item Terminal state enforcement (no transitions from COMPLETED)
+\end{itemize}
+
+\subsubsection{Gallery API (9 tests)}
+
+Create with and without optional category field, list ordered by creation date, delete, 404 handling.
+
+\subsubsection{Contact \& Auth API (8 tests)}
+
+Contact form validation (name, phone, message required; email optional). Admin login: wrong password returns 401, missing fields return 400, unauthenticated \texttt{/admin/*} requests redirect with 307.
+
+\subsection{System Testing}
+
+System tests verify complete user journeys across multiple API calls in sequence.
+
+\begin{table}[H]
+\centering
+\caption{System Test Flows}
+\begin{tabularx}{\textwidth}{lXr}
+\toprule
+\textbf{Flow} & \textbf{Description} & \textbf{Tests} \\
+\midrule
+Customer Order       & Place order $\to$ retrieve by ID $\to$ verify status $\to$ confirm details & 4 \\
+Admin Order Mgmt     & Retrieve order $\to$ advance through full pipeline $\to$ terminal state & 4 \\
+Material Management  & Create $\to$ retrieve $\to$ update $\to$ soft-delete $\to$ verify exclusion & 5 \\
+Gallery Management   & Admin adds item $\to$ appears in public listing $\to$ admin deletes $\to$ removed & 4 \\
+Page Accessibility   & All 7 public pages return HTTP 200; protected routes redirect without auth & 8 \\
+\midrule
+\textbf{Total} & & \textbf{24} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection{Regression Testing}
+
+Eight previously identified bugs each have dedicated regression guards. None have reappeared.
+
+\begin{longtable}{p{1.5cm}p{4cm}p{8cm}}
+\toprule
+\textbf{Bug ID} & \textbf{Title} & \textbf{Fix Verified} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Bug ID} & \textbf{Title} & \textbf{Fix Verified} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+REG-001 & Uppercase enum enforcement & New orders have \texttt{PENDING} (uppercase); lowercase input rejected with 400 \\
+REG-002 & Soft-delete visibility & Public GET excludes inactive; admin \texttt{?all=true} includes them \\
+REG-003 & Optional gallery category & Gallery items created with or without category; null is valid \\
+REG-004 & Status pipeline transitions & Skipped and backward transitions return 400; forward-only enforced \\
+REG-005 & Server-side price integrity & Client-provided price ignored; server recalculates from material record \\
+REG-006 & Database-connected page rendering & All public pages rendering from DB return 200 with populated content \\
+REG-007 & Duplicate material 409 & Creating a material with an existing name returns 409, not 500 \\
+REG-008 & Filter validation & Invalid status filter on orders returns 400, not a crash \\
+\end{longtable}
+
+\subsection{Test Execution Output}
+
+The following screenshots were captured during a full test run on the development environment. They provide evidence of the parallel Jest multi-project execution and the individual test case results across all four test levels.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{jest-testing-ss/43dcc90a-96c0-47e1-82bf-0622c06c31f5.jpeg}
+  \caption{Unit Test Output (1 of 3): \texttt{StandardPricing} strategy executing within the Jest parallel runner. Test cases confirm correct area-based price calculation, linear scaling with quantity, decimal dimension handling, and zero-value edge cases.}
+  \label{fig:jest-unit-1}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{jest-testing-ss/54133571-16c1-41c9-a696-d102037ca56a.jpeg}
+  \caption{Unit Test Output (2 of 3): \texttt{BulkDiscountPricing} strategy. Test cases verify that no discount is applied below a quantity of five, a 10\% discount is applied at exactly five units, and the discount continues to apply for quantities greater than five.}
+  \label{fig:jest-unit-2}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{jest-testing-ss/82b44dec-a0c6-48ae-9ea1-4d804198ac28.jpeg}
+  \caption{Unit Test Output (3 of 3): \texttt{PriceCalculator} context class. Test cases confirm that strategies can be switched at runtime using \texttt{setStrategy()} and that different strategies applied to the same input produce different results, validating the Strategy pattern implementation.}
+  \label{fig:jest-unit-3}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{jest-testing-ss/3b016a07-0299-4251-8792-211c6b14474d.jpeg}
+  \caption{Integration Test Output: \texttt{contact-auth-api.test.ts} passing (PASS badge). The output shows individual test cases for the Contact API: valid form submission accepted (59 ms), submission without optional email field accepted (49 ms), and submission with a missing required field rejected (48 ms).}
+  \label{fig:jest-integration}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{jest-testing-ss/f6be0466-b191-427d-bd97-f6d7e7a97e52.jpeg}
+  \caption{System Test Output and Final Summary: The upper portion shows the Public Pages Accessibility flow confirming HTTP 200 responses for all seven public routes and a redirect for protected admin routes without authentication. The summary line at the bottom shows the complete test run result: 8 suites passed, 133 tests passed, 0 snapshots, total execution time 2.381 seconds across 4 projects.}
+  \label{fig:jest-final}
+\end{figure}
+
+%% ═══════════════════════════════════════════════════════════════════════════
+\section{Conclusion}
+%% ═══════════════════════════════════════════════════════════════════════════
+
+The BrandON platform delivers a complete, tested, end-to-end banner order management system built on a modern TypeScript stack. The system addresses the core problem identified during the requirements phase: customers can now browse materials, calculate prices, and place orders without visiting the shop, while the administrator has a centralised dashboard to manage all operational data.
+
+The Singleton pattern ensured that the database connection remained stable throughout the development and testing cycles. The Strategy pattern kept the pricing logic modular and testable as new rules were introduced. The decision to calculate the total price on the server side, rather than accepting a client-submitted value, was an important security consideration that prevents price manipulation.
+
+A total of 133 tests were executed across all four test levels and all 133 passed, with a total execution time of 2.381 seconds.
+
+As with any software project, further improvements remain possible. These include handling additional edge cases, refining the user interface for accessibility, and extending features based on ongoing client feedback. The current implementation provides a stable foundation for these future enhancements.
+\appendix
+\section*{Appendix}
+\addcontentsline{toc}{section}{Appendix}
+%% ═══════════════════════════════════════════════════════════════════════════
+
+\subsection*{A. Repository and Project Links}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Resource} & \textbf{Link} \\
+\midrule
+GitHub Repository & \url{https://github.com/M-Jawad01/Brand-On_Project} \\
+Google Drive (Deliverables) & \textit{[Provide final Google Drive link here]} \\
+Demo Video & \textit{[Provide final demo video link here]} \\
+Client Feedback Video & \textit{[Provide client feedback recording link here]} \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\subsection*{B. API Endpoint Reference}
+
+\begin{longtable}{p{4.5cm}p{2cm}p{7cm}}
+\toprule
+\textbf{Endpoint} & \textbf{Methods} & \textbf{Description} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Endpoint} & \textbf{Methods} & \textbf{Description} \\
+\midrule
+\endhead
+\bottomrule
+\endlastfoot
+\texttt{/api/materials}      & GET, POST           & List active materials; create new material \\
+\texttt{/api/materials/[id]} & GET, PUT, DELETE    & Retrieve, update, or soft-delete a material \\
+\texttt{/api/orders}         & GET, POST           & List all orders (admin); place new order (customer) \\
+\texttt{/api/orders/[id]}    & GET, PATCH          & Retrieve order detail; update order status \\
+\texttt{/api/gallery}        & GET, POST           & List gallery items; create gallery item \\
+\texttt{/api/gallery/[id]}   & DELETE              & Delete a gallery item \\
+\texttt{/api/upload}         & POST                & Upload design file, returns URL \\
+\texttt{/api/contact}        & POST                & Submit contact form message \\
+\texttt{/api/admin/login}    & POST                & Admin password check, sets httpOnly cookie \\
+\end{longtable}
+
+\subsection*{C. Environment Variables}
+
+\begin{lstlisting}[caption=Required Environment Variables (.env)]
+DATABASE_URL="postgresql://user:password@localhost:5432/brandon"
+ADMIN_SECRET="your-admin-password-here"
+\end{lstlisting}
+
+\subsection*{D. Definition of Done}
+
+A task was considered complete only when:
+\begin{enumerate}[noitemsep]
+  \item Code compiles: \texttt{npx next build} exits with no errors
+  \item Feature works correctly in the browser (manual verification)
+  \item Relevant unit or integration tests pass
+  \item Code is committed and pushed to the GitHub repository
+  \item No TypeScript errors or ESLint warnings remain
+\end{enumerate}
+
+\subsection*{E. Test Run Commands}
+
+\begin{table}[H]
+\centering
+\begin{tabularx}{\textwidth}{lX}
+\toprule
+\textbf{Command} & \textbf{Scope} \\
+\midrule
+\texttt{npx jest}                              & All 133 tests across all suites \\
+\texttt{npx jest --selectProjects unit}        & 33 unit tests only (no server required) \\
+\texttt{npx jest --selectProjects integration} & 53 integration tests (server + DB required) \\
+\texttt{npx jest --selectProjects system}      & 24 system tests \\
+\texttt{npx jest --selectProjects regression}  & 17 regression tests \\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+\end{document}

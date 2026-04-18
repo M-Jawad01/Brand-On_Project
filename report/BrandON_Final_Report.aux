@@ -1,0 +1,124 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{4}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Problem Statement}{4}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Proposed Solution}{4}{subsection.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Project Scope}{4}{subsection.1.3}\protected@file@percent }
+\gdef \LT@i {\LT@entry 
+    {1}{40.45274pt}\LT@entry 
+    {1}{83.13188pt}\LT@entry 
+    {1}{140.0374pt}\LT@entry 
+    {1}{125.81102pt}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.4}Technology Choices}{5}{subsection.1.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Technology Stack}}{5}{table.caption.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}User Stories and Requirements}{5}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Customer Stories}{5}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Admin Stories}{5}{subsection.2.2}\protected@file@percent }
+\gdef \LT@ii {\LT@entry 
+    {1}{40.45274pt}\LT@entry 
+    {1}{83.13188pt}\LT@entry 
+    {1}{140.0374pt}\LT@entry 
+    {1}{125.81102pt}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Acceptance Criteria (Selected)}{6}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}System Architecture and Design}{6}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}System Architecture Overview}{6}{subsection.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces System Architecture Diagram. The browser communicates with the Next.js server over HTTP. The middleware layer intercepts all \texttt  {/admin/*} routes and enforces cookie-based authentication before any server component or API route is reached. The \texttt  {lib/} modules (prisma.ts, pricing.ts, validation.ts) are shared utilities consumed by API routes and server components alike. All database operations go through Prisma ORM to PostgreSQL running in a Docker container.}}{7}{figure.caption.2}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:arch}{{1}{7}{System Architecture Diagram. The browser communicates with the Next.js server over HTTP. The middleware layer intercepts all \texttt {/admin/*} routes and enforces cookie-based authentication before any server component or API route is reached. The \texttt {lib/} modules (prisma.ts, pricing.ts, validation.ts) are shared utilities consumed by API routes and server components alike. All database operations go through Prisma ORM to PostgreSQL running in a Docker container}{figure.caption.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Class and Component Diagram. The diagram shows the five distinct layers of the system: the React Component Layer (Header, Footer, AdminLogin), the API Routes HTTP Layer (POST /api/admin/login), the Validation Layer (ValidationHelpers module with OrderInput and MaterialInput interfaces), the Pricing Layer implementing the Strategy Pattern (PricingStrategy interface, three concrete strategies, and PriceCalculator context), and the Database Layer using the Singleton Pattern (DatabaseClient wrapping PrismaClient). Arrows indicate delegation and composition relationships between layers.}}{8}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:class}{{2}{8}{Class and Component Diagram. The diagram shows the five distinct layers of the system: the React Component Layer (Header, Footer, AdminLogin), the API Routes HTTP Layer (POST /api/admin/login), the Validation Layer (ValidationHelpers module with OrderInput and MaterialInput interfaces), the Pricing Layer implementing the Strategy Pattern (PricingStrategy interface, three concrete strategies, and PriceCalculator context), and the Database Layer using the Singleton Pattern (DatabaseClient wrapping PrismaClient). Arrows indicate delegation and composition relationships between layers}{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Database Design}{9}{subsection.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Entity Relationship Diagram. Six tables constitute the schema: \texttt  {Material} (products with pricing), \texttt  {Order} (customer submissions with foreign key to Material), \texttt  {OrderStatusHistory} (audit log of every status change), \texttt  {Admin} (shop staff accounts with bcrypt-hashed passwords), \texttt  {GalleryItem} (portfolio images uploaded by admins), and \texttt  {CompanyProfile} (a single-row settings table for shop contact details and social links). The diagram shows all primary keys, foreign key relationships, and field types.}}{9}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:erd}{{3}{9}{Entity Relationship Diagram. Six tables constitute the schema: \texttt {Material} (products with pricing), \texttt {Order} (customer submissions with foreign key to Material), \texttt {OrderStatusHistory} (audit log of every status change), \texttt {Admin} (shop staff accounts with bcrypt-hashed passwords), \texttt {GalleryItem} (portfolio images uploaded by admins), and \texttt {CompanyProfile} (a single-row settings table for shop contact details and social links). The diagram shows all primary keys, foreign key relationships, and field types}{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.2.1}Relationships}{9}{subsubsection.3.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Database Relationship Summary}}{9}{table.caption.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Sequence Diagrams}{10}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Place Order Flow}{10}{subsubsection.3.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Place Order Sequence Diagram. The sequence begins when the customer fills the order form and submits it. The browser sends a POST request to \texttt  {/api/orders}. The API route first calls \texttt  {validateOrderInput()}; any validation failure returns a 400 response immediately. For valid input, the server fetches the material price from the database and recalculates the total price on the server side, ignoring any value submitted by the client. Prisma creates the order record, generates a human-readable order number in the format BON-YYYYMMDD-NNN, and the confirmation is returned to the customer.}}{10}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:order-seq}{{4}{10}{Place Order Sequence Diagram. The sequence begins when the customer fills the order form and submits it. The browser sends a POST request to \texttt {/api/orders}. The API route first calls \texttt {validateOrderInput()}; any validation failure returns a 400 response immediately. For valid input, the server fetches the material price from the database and recalculates the total price on the server side, ignoring any value submitted by the client. Prisma creates the order record, generates a human-readable order number in the format BON-YYYYMMDD-NNN, and the confirmation is returned to the customer}{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.2}Admin Login Flow}{11}{subsubsection.3.3.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Admin Login Sequence Diagram. When the admin navigates to \texttt  {/admin}, the middleware reads the \texttt  {admin\_token} cookie. If the cookie is absent, the request is redirected to \texttt  {/admin/login}. The admin submits their password via a POST request to \texttt  {/api/admin/login}. The server compares the submitted value against the \texttt  {ADMIN\_SECRET} environment variable. On success, an httpOnly cookie named \texttt  {admin\_token} is set and the admin is redirected to the dashboard. All subsequent requests to \texttt  {/admin/*} routes repeat this cookie check through the middleware; the dashboard pages themselves perform no additional authentication logic.}}{11}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:login-seq}{{5}{11}{Admin Login Sequence Diagram. When the admin navigates to \texttt {/admin}, the middleware reads the \texttt {admin\_token} cookie. If the cookie is absent, the request is redirected to \texttt {/admin/login}. The admin submits their password via a POST request to \texttt {/api/admin/login}. The server compares the submitted value against the \texttt {ADMIN\_SECRET} environment variable. On success, an httpOnly cookie named \texttt {admin\_token} is set and the admin is redirected to the dashboard. All subsequent requests to \texttt {/admin/*} routes repeat this cookie check through the middleware; the dashboard pages themselves perform no additional authentication logic}{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Use Case Diagram}{12}{subsection.3.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Use Case Diagram for the BrandON Platform. The diagram is partitioned into three zones: Public Zone (customer-facing actions), Admin Zone (authenticated management actions), and System Automated Actions (middleware-triggered operations). Customer use cases include browsing materials, viewing gallery, placing orders, and contacting the shop. Admin use cases cover the full CRUD lifecycle for materials, orders, and gallery items, plus company profile management. The ``Place Order'' use case includes ``Validate Order Input'' and ``Calculate Price'' as included sub-flows. All Admin Zone use cases include authentication via middleware as a prerequisite, shown with \textless \textless include\textgreater \textgreater \ relationships.}}{12}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:usecase}{{6}{12}{Use Case Diagram for the BrandON Platform. The diagram is partitioned into three zones: Public Zone (customer-facing actions), Admin Zone (authenticated management actions), and System Automated Actions (middleware-triggered operations). Customer use cases include browsing materials, viewing gallery, placing orders, and contacting the shop. Admin use cases cover the full CRUD lifecycle for materials, orders, and gallery items, plus company profile management. The ``Place Order'' use case includes ``Validate Order Input'' and ``Calculate Price'' as included sub-flows. All Admin Zone use cases include authentication via middleware as a prerequisite, shown with \textless \textless include\textgreater \textgreater \ relationships}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Design Patterns}{12}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Singleton Pattern: Database Client}{12}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}The Problem It Solves}{12}{subsubsection.4.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Implementation}{12}{subsubsection.4.1.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}{\ignorespaces Singleton Pattern in lib/prisma.ts (TypeScript)}}{13}{lstlisting.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Key Design Elements}{13}{subsubsection.4.1.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Singleton Pattern Elements}}{13}{table.caption.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Strategy Pattern: Pricing Calculator}{13}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}The Problem It Solves}{13}{subsubsection.4.2.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}{\ignorespaces Strategy Pattern in lib/pricing.ts (TypeScript)}}{14}{lstlisting.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Key Design Elements}{15}{subsubsection.4.2.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Strategy Pattern Elements}}{15}{table.caption.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}UI and GUI Design}{15}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Color Palette}{15}{subsection.5.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Brand Color Palette}}{15}{table.caption.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Typography}{15}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Navigation Structure}{16}{subsection.5.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Public Navigation Routes}}{16}{table.caption.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Sprint Scheduling and Project Management}{16}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Team Development Strategy}{16}{subsection.6.1}\protected@file@percent }
+\gdef \LT@iii {\LT@entry 
+    {1}{26.22636pt}\LT@entry 
+    {1}{196.9429pt}\LT@entry 
+    {1}{68.9055pt}\LT@entry 
+    {1}{54.67912pt}}
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Sprint Summary Table}}{17}{table.caption.13}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Sprint 6 Detailed Tasks}{17}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Team Contribution Summary}{18}{subsection.6.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Member Roles and Verified Contributions}}{18}{table.caption.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Software Estimation}{18}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}KLOC Estimation}{18}{subsection.7.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces KLOC Breakdown by Module}}{18}{table.caption.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}Function Point Analysis}{19}{subsection.7.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Function Point Count}}{19}{table.caption.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}Effort Estimation (COCOMO Basic)}{19}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}Duration Estimation}{20}{subsection.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Team Size}{20}{subsection.7.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Estimation Summary}}{20}{table.caption.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Software Testing}{20}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Testing Strategy}{20}{subsection.8.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Test Results Summary}}{21}{table.caption.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Test Architecture}{21}{subsection.8.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3}{\ignorespaces Jest Multi-Project Directory Structure}}{21}{lstlisting.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Unit Testing}{21}{subsection.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.3.1}Validation Module (17 tests)}{21}{subsubsection.8.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.3.2}Pricing Strategy Module (16 tests)}{21}{subsubsection.8.3.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Pricing Unit Test Cases}}{22}{table.caption.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Integration Testing}{22}{subsection.8.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.1}Materials API (15 tests)}{22}{subsubsection.8.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.2}Orders API (21 tests)}{22}{subsubsection.8.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.3}Gallery API (9 tests)}{22}{subsubsection.8.4.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.4.4}Contact \& Auth API (8 tests)}{22}{subsubsection.8.4.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.5}System Testing}{22}{subsection.8.5}\protected@file@percent }
+\gdef \LT@iv {\LT@entry 
+    {1}{54.67912pt}\LT@entry 
+    {1}{125.81102pt}\LT@entry 
+    {1}{239.62204pt}}
+\@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces System Test Flows}}{23}{table.caption.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.6}Regression Testing}{23}{subsection.8.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.7}Test Execution Output}{23}{subsection.8.7}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Unit Test Output (1 of 3): \texttt  {StandardPricing} strategy executing within the Jest parallel runner. Test cases confirm correct area-based price calculation, linear scaling with quantity, decimal dimension handling, and zero-value edge cases.}}{24}{figure.caption.21}\protected@file@percent }
+\newlabel{fig:jest-unit-1}{{7}{24}{Unit Test Output (1 of 3): \texttt {StandardPricing} strategy executing within the Jest parallel runner. Test cases confirm correct area-based price calculation, linear scaling with quantity, decimal dimension handling, and zero-value edge cases}{figure.caption.21}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Unit Test Output (2 of 3): \texttt  {BulkDiscountPricing} strategy. Test cases verify that no discount is applied below a quantity of five, a 10\% discount is applied at exactly five units, and the discount continues to apply for quantities greater than five.}}{24}{figure.caption.22}\protected@file@percent }
+\newlabel{fig:jest-unit-2}{{8}{24}{Unit Test Output (2 of 3): \texttt {BulkDiscountPricing} strategy. Test cases verify that no discount is applied below a quantity of five, a 10\% discount is applied at exactly five units, and the discount continues to apply for quantities greater than five}{figure.caption.22}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Unit Test Output (3 of 3): \texttt  {PriceCalculator} context class. Test cases confirm that strategies can be switched at runtime using \texttt  {setStrategy()} and that different strategies applied to the same input produce different results, validating the Strategy pattern implementation.}}{25}{figure.caption.23}\protected@file@percent }
+\newlabel{fig:jest-unit-3}{{9}{25}{Unit Test Output (3 of 3): \texttt {PriceCalculator} context class. Test cases confirm that strategies can be switched at runtime using \texttt {setStrategy()} and that different strategies applied to the same input produce different results, validating the Strategy pattern implementation}{figure.caption.23}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Integration Test Output: \texttt  {contact-auth-api.test.ts} passing (PASS badge). The output shows individual test cases for the Contact API: valid form submission accepted (59 ms), submission without optional email field accepted (49 ms), and submission with a missing required field rejected (48 ms).}}{25}{figure.caption.24}\protected@file@percent }
+\newlabel{fig:jest-integration}{{10}{25}{Integration Test Output: \texttt {contact-auth-api.test.ts} passing (PASS badge). The output shows individual test cases for the Contact API: valid form submission accepted (59 ms), submission without optional email field accepted (49 ms), and submission with a missing required field rejected (48 ms)}{figure.caption.24}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces System Test Output and Final Summary: The upper portion shows the Public Pages Accessibility flow confirming HTTP 200 responses for all seven public routes and a redirect for protected admin routes without authentication. The summary line at the bottom shows the complete test run result: 8 suites passed, 133 tests passed, 0 snapshots, total execution time 2.381 seconds across 4 projects.}}{26}{figure.caption.25}\protected@file@percent }
+\newlabel{fig:jest-final}{{11}{26}{System Test Output and Final Summary: The upper portion shows the Public Pages Accessibility flow confirming HTTP 200 responses for all seven public routes and a redirect for protected admin routes without authentication. The summary line at the bottom shows the complete test run result: 8 suites passed, 133 tests passed, 0 snapshots, total execution time 2.381 seconds across 4 projects}{figure.caption.25}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {9}Conclusion}{26}{section.9}\protected@file@percent }
+\gdef \LT@v {\LT@entry 
+    {1}{140.0374pt}\LT@entry 
+    {1}{68.9055pt}\LT@entry 
+    {1}{211.16928pt}}
+\@writefile{toc}{\contentsline {section}{Appendix}{27}{section.9}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {4}{\ignorespaces Required Environment Variables (.env)}}{27}{lstlisting.4}\protected@file@percent }
+\gdef \@abspage@last{28}
