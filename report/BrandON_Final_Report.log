@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.22)  18 APR 2026 20:40
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.12.22)  20 APR 2026 01:18
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -672,7 +672,7 @@ LaTeX Font Info:    Trying to load font information for T1+cmtt on input line 2
  (/usr/share/texlive/texmf-dist/tex/latex/base/t1cmtt.fd
 File: t1cmtt.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
-<diagrams/component-diagram.png, id=306, 653.44125pt x 914.41624pt>
+<diagrams/component-diagram.png, id=311, 653.44125pt x 914.41624pt>
 File: diagrams/component-diagram.png Graphic file (type png)
 <use diagrams/component-diagram.png>
 Package pdftex.def Info: diagrams/component-diagram.png  used on input line 228
@@ -693,32 +693,32 @@ MIN_SECRET
  []
 
 [7 <./diagrams/component-diagram.png>]
-<diagrams/class-diagram.png, id=324, 1027.84pt x 561.09625pt>
+<diagrams/class-diagram.png, id=329, 1027.84pt x 561.09625pt>
 File: diagrams/class-diagram.png Graphic file (type png)
 <use diagrams/class-diagram.png>
 Package pdftex.def Info: diagrams/class-diagram.png  used on input line 239.
 (pdftex.def)             Requested size: 430.31812pt x 234.91396pt.
-<diagrams/db-diagram.png, id=325, 1293.83376pt x 819.06pt>
+<diagrams/db-diagram.png, id=330, 1293.83376pt x 819.06pt>
 File: diagrams/db-diagram.png Graphic file (type png)
 <use diagrams/db-diagram.png>
 Package pdftex.def Info: diagrams/db-diagram.png  used on input line 248.
 (pdftex.def)             Requested size: 407.66833pt x 258.06775pt.
  [8 <./diagrams/class-diagram.png (PNG copy)>]
-<diagrams/sequence-diagram-place-order.png, id=331, 1316.92pt x 1112.155pt>
+<diagrams/sequence-diagram-place-order.png, id=336, 1316.92pt x 1112.155pt>
 File: diagrams/sequence-diagram-place-order.png Graphic file (type png)
 <use diagrams/sequence-diagram-place-order.png>
 Package pdftex.def Info: diagrams/sequence-diagram-place-order.png  used on inp
 ut line 277.
 (pdftex.def)             Requested size: 362.37569pt x 306.02176pt.
  [9 <./diagrams/db-diagram.png>]
-<diagrams/sequence-diagram-admin.png, id=339, 1230.5975pt x 1262.7175pt>
+<diagrams/sequence-diagram-admin.png, id=344, 1230.5975pt x 1262.7175pt>
 File: diagrams/sequence-diagram-admin.png Graphic file (type png)
 <use diagrams/sequence-diagram-admin.png>
 Package pdftex.def Info: diagrams/sequence-diagram-admin.png  used on input lin
 e 286.
 (pdftex.def)             Requested size: 362.37569pt x 371.82408pt.
  [10 <./diagrams/sequence-diagram-place-order.png>]
-<diagrams/use-case-diagram.png, id=346, 1284.8pt x 700.6175pt>
+<diagrams/use-case-diagram.png, id=351, 1284.8pt x 700.6175pt>
 File: diagrams/use-case-diagram.png Graphic file (type png)
 <use diagrams/use-case-diagram.png>
 Package pdftex.def Info: diagrams/use-case-diagram.png  used on input line 295.
@@ -847,7 +847,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 845--845
 []|\T1/cmr/m/n/12 REG-
  []
 
-<jest-testing-ss/43dcc90a-96c0-47e1-82bf-0622c06c31f5.jpeg, id=496, 1664.2175pt
+<jest-testing-ss/43dcc90a-96c0-47e1-82bf-0622c06c31f5.jpeg, id=501, 1664.2175pt
  x 846.16125pt>
 File: jest-testing-ss/43dcc90a-96c0-47e1-82bf-0622c06c31f5.jpeg Graphic file (t
 ype jpg)
@@ -856,7 +856,7 @@ Package pdftex.def Info: jest-testing-ss/43dcc90a-96c0-47e1-82bf-0622c06c31f5.j
 peg  used on input line 854.
 (pdftex.def)             Requested size: 452.9679pt x 230.3pt.
 [23]
-<jest-testing-ss/54133571-16c1-41c9-a696-d102037ca56a.jpeg, id=504, 1664.2175pt
+<jest-testing-ss/54133571-16c1-41c9-a696-d102037ca56a.jpeg, id=508, 1664.2175pt
  x 846.16125pt>
 File: jest-testing-ss/54133571-16c1-41c9-a696-d102037ca56a.jpeg Graphic file (t
 ype jpg)
@@ -864,7 +864,7 @@ ype jpg)
 Package pdftex.def Info: jest-testing-ss/54133571-16c1-41c9-a696-d102037ca56a.j
 peg  used on input line 861.
 (pdftex.def)             Requested size: 452.9679pt x 230.3pt.
-<jest-testing-ss/82b44dec-a0c6-48ae-9ea1-4d804198ac28.jpeg, id=505, 1664.2175pt
+<jest-testing-ss/82b44dec-a0c6-48ae-9ea1-4d804198ac28.jpeg, id=509, 1664.2175pt
  x 846.16125pt>
 File: jest-testing-ss/82b44dec-a0c6-48ae-9ea1-4d804198ac28.jpeg Graphic file (t
 ype jpg)
@@ -874,7 +874,7 @@ peg  used on input line 868.
 (pdftex.def)             Requested size: 452.9679pt x 230.3pt.
  [24 <./jest-testing-ss/43dcc90a-96c0-47e1-82bf-0622c06c31f5.jpeg> <./jest-test
 ing-ss/54133571-16c1-41c9-a696-d102037ca56a.jpeg>]
-<jest-testing-ss/3b016a07-0299-4251-8792-211c6b14474d.jpeg, id=512, 1664.2175pt
+<jest-testing-ss/3b016a07-0299-4251-8792-211c6b14474d.jpeg, id=516, 1664.2175pt
  x 846.16125pt>
 File: jest-testing-ss/3b016a07-0299-4251-8792-211c6b14474d.jpeg Graphic file (t
 ype jpg)
@@ -882,7 +882,7 @@ ype jpg)
 Package pdftex.def Info: jest-testing-ss/3b016a07-0299-4251-8792-211c6b14474d.j
 peg  used on input line 875.
 (pdftex.def)             Requested size: 452.9679pt x 230.3pt.
-<jest-testing-ss/f6be0466-b191-427d-bd97-f6d7e7a97e52.jpeg, id=513, 1664.2175pt
+<jest-testing-ss/f6be0466-b191-427d-bd97-f6d7e7a97e52.jpeg, id=517, 1664.2175pt
  x 846.16125pt>
 File: jest-testing-ss/f6be0466-b191-427d-bd97-f6d7e7a97e52.jpeg Graphic file (t
 ype jpg)
@@ -891,8 +891,32 @@ Package pdftex.def Info: jest-testing-ss/f6be0466-b191-427d-bd97-f6d7e7a97e52.j
 peg  used on input line 882.
 (pdftex.def)             Requested size: 452.9679pt x 230.3pt.
  [25 <./jest-testing-ss/82b44dec-a0c6-48ae-9ea1-4d804198ac28.jpeg> <./jest-test
-ing-ss/3b016a07-0299-4251-8792-211c6b14474d.jpeg>] [26 <./jest-testing-ss/f6be0
-466-b191-427d-bd97-f6d7e7a97e52.jpeg>]
+ing-ss/3b016a07-0299-4251-8792-211c6b14474d.jpeg>]
+Underfull \hbox (badness 10000) in paragraph at lines 916--916
+[]|[][]$\T1/cmtt/m/n/12 https : / / drive . google . com / drive / folders /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 916--916
+[]|[][]$\T1/cmtt/m/n/12 https : / / drive . google . com / file / d /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 916--916
+\T1/cmtt/m/n/12 1FwGaqtQGrgvTfMEvJ4OCHVYvRURQAQBN / view ? usp =
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 916--916
+[]|[][]$\T1/cmtt/m/n/12 https : / / drive . google . com / file / d /
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 916--916
+\T1/cmtt/m/n/12 157PgYV12Dcwuvmkl3F7FBoAR9u _ Cdxyf / view ? usp =
+ []
+
+[26 <./jest-testing-ss/f6be0466-b191-427d-bd97-f6d7e7a97e52.jpeg>]
 Underfull \hbox (badness 10000) in paragraph at lines 932--932
 []|\T1/cmr/m/n/12 GET,
  []
@@ -927,24 +951,14 @@ Underfull \hbox (badness 10000) in paragraph at lines 936--936
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-Package rerunfilecheck Warning: File `BrandON_Final_Report.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `BrandON_Final_Report.out':
-(rerunfilecheck)             Before: D01F4693F623C3791EBA9B45F352A09F;8811
-(rerunfilecheck)             After:  743AFC65C3CACEE3D9DD116CDB11F7FC;8980.
+Package rerunfilecheck Info: File `BrandON_Final_Report.out' has not changed.
+(rerunfilecheck)             Checksum: 743AFC65C3CACEE3D9DD116CDB11F7FC;8980.
  ) 
 Here is how much of TeX's memory you used:
- 15134 strings out of 476106
- 235885 string characters out of 5793932
+ 15135 strings out of 476106
+ 235901 string characters out of 5793932
  2212975 words of memory out of 5000000
- 36754 multiletter control sequences out of 15000+600000
+ 36755 multiletter control sequences out of 15000+600000
  573757 words of font info for 69 fonts, out of 8000000 for 9000
  59 hyphenation exceptions out of 8191
  75i,12n,79p,1209b,2083s stack positions out of 10000i,1000n,20000p,200000b,200000s
@@ -961,10 +975,10 @@ lic/cm-super/sfrm0600.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm120
 xmf/fonts/type1/public/cm-super/sfti1200.pfb></usr/share/texmf/fonts/type1/publ
 ic/cm-super/sftt1095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1200
 .pfb>
-Output written on BrandON_Final_Report.pdf (28 pages, 2437138 bytes).
+Output written on BrandON_Final_Report.pdf (28 pages, 2437431 bytes).
 PDF statistics:
- 660 PDF objects out of 1000 (max. 8388607)
- 576 compressed objects within 6 object streams
+ 678 PDF objects out of 1000 (max. 8388607)
+ 588 compressed objects within 6 object streams
  201 named destinations out of 1000 (max. 500000)
- 488 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 496 words of extra memory for PDF output out of 10000 (max. 10000000)
 
